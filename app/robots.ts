@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = "https://clerky.com"; // TODO: Atualizar com URL real
+  const baseUrl = "https://clerky.com.br";
 
   return {
     rules: {

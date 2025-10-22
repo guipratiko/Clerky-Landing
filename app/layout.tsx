@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://clerky.com"), // TODO: Atualizar com URL real
+  metadataBase: new URL("https://clerky.com.br"),
   alternates: {
     canonical: "/",
   },
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     title: "Clerky - Hub de Integração WhatsApp com IA",
     description:
       "Conecte seu WhatsApp a qualquer sistema via API ou Webhook. Crie agentes de IA sem código, gerencie no CRM Kanban e automatize campanhas.",
-    url: "https://clerky.com", // TODO: Atualizar com URL real
+    url: "https://clerky.com.br",
     siteName: "Clerky",
     images: [
       {
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
     description:
       "Conecte seu WhatsApp a qualquer sistema via API ou Webhook. Crie agentes de IA sem código.",
     images: ["/og-image.svg"],
-    creator: "@clerky", // TODO: Atualizar com handle real
+    creator: "@clerky_ia",
   },
   robots: {
     index: true,
@@ -96,8 +96,8 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "Clerky",
-    url: "https://clerky.com", // TODO: Atualizar com URL real
-    logo: "https://clerky.com/img/logo3.png", // TODO: Atualizar com URL real
+    url: "https://clerky.com.br",
+    logo: "https://clerky.com.br/img/logo3.png",
     description:
       "Hub de Integração WhatsApp com IA, API e Webhook. CRM Kanban e Disparo em Massa.",
     contactPoint: {
@@ -106,8 +106,7 @@ export default function RootLayout({
       availableLanguage: ["pt-BR", "en", "es"],
     },
     sameAs: [
-      "https://linkedin.com/company/clerky", // TODO: Atualizar com URLs reais
-      "https://twitter.com/clerky",
+      "https://instagram.com/clerky_ia",
       "https://youtube.com/@clerky",
     ],
   };
