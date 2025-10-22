@@ -21,6 +21,10 @@ export function Brands() {
       name: "Scancal",
       logo: "/img/LogoScancal.png",
     },
+    {
+      name: "TokCash",
+      logo: "/img/LogoTokCash.png",
+    },
   ];
 
   return (
