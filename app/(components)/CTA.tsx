@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { gtag_report_conversion } from "@/lib/google-ads";
 
 export function CTA() {
   return (
@@ -38,7 +39,13 @@ export function CTA() {
               asChild
               className="group bg-white text-primary hover:bg-white/90"
             >
-              <Link href="https://app.clerky.com.br/register">
+              <Link 
+                href="https://app.clerky.com.br/register"
+                onClick={(e) => {
+                  e.preventDefault();
+                  gtag_report_conversion('https://app.clerky.com.br/register', 1.0, 'BRL');
+                }}
+              >
                 Começar agora
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>

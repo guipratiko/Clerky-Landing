@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Check, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "./ui/GlassCard";
+import { gtag_report_conversion } from "@/lib/google-ads";
 
 export function Pricing() {
   // TODO: Substituir por dados reais de preços
@@ -186,7 +187,19 @@ export function Pricing() {
                     className={`w-full ${plan.highlighted ? "glow-primary" : ""}`}
                     variant={plan.highlighted ? "default" : "outline"}
                   >
-                    <Link href={plan.href}>{plan.cta}</Link>
+                    <Link 
+                      href={plan.href}
+                      onClick={(e) => {
+                        // Rastrear conversão para plano Pro e redirecionar após envio
+                        if (plan.highlighted) {
+                          e.preventDefault();
+                          gtag_report_conversion(plan.href, 197.0, 'BRL');
+                        }
+                        // Para outros planos, deixar navegação normal
+                      }}
+                    >
+                      {plan.cta}
+                    </Link>
                   </Button>
                 </div>
               </GlassCard>

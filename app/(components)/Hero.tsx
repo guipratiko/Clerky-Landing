@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Particles } from "./ui/Particles";
 import { CursorSpotlight } from "./ui/CursorSpotlight";
+import { gtag_report_conversion } from "@/lib/google-ads";
 
 interface HeroProps {
   enableParticles?: boolean;
@@ -61,8 +62,20 @@ export function Hero({ enableParticles = true }: HeroProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            <Button size="lg" asChild className="glow-primary text-base">
-              <Link href="https://app.clerky.com.br/register">Começar agora</Link>
+            <Button 
+              size="lg" 
+              asChild 
+              className="glow-primary text-base"
+            >
+              <Link 
+                href="https://app.clerky.com.br/register"
+                onClick={(e) => {
+                  e.preventDefault();
+                  gtag_report_conversion('https://app.clerky.com.br/register', 1.0, 'BRL');
+                }}
+              >
+                Começar agora
+              </Link>
             </Button>
             <Button size="lg" variant="outline" asChild className="text-base">
               <Link href="#integracoes">Ver integrações</Link>
