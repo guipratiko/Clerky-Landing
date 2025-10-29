@@ -10,25 +10,25 @@ export function Pricing() {
   // TODO: Substituir por dados reais de preços
   const plans = [
     {
-      name: "Starter",
-      price: "R$ 197",
-      period: "/mês",
-      description: "Ideal para começar e validar seu projeto",
+      name: "Trial",
+      price: "Grátis",
+      period: "por 7 dias",
+      description: "Teste gratuito com recursos limitados",
       features: [
-        "2.000 mensagens/mês",
-        "1 agente de IA",
-        "CRM Kanban básico",
-        "API & Webhooks",
+        "1 conexão WhatsApp",
+        "CRM Kanban",
+        "1 integração via webhook",
+        "Sem disparo em massa",
+        "Sem Workflow de IA",
         "Suporte por email",
-        "Documentação completa",
       ],
-      cta: "Começar agora",
+      cta: "Começar trial",
       href: "https://app.clerky.com.br/register",
       highlighted: false,
     },
     {
       name: "Pro",
-      price: "R$ 497",
+      price: "R$ 197",
       period: "/mês",
       description: "Para empresas que querem escalar vendas",
       features: [
@@ -42,7 +42,7 @@ export function Pricing() {
         "Analytics avançado",
       ],
       cta: "Assinar Pro",
-      href: "https://app.clerky.com.br/register",
+      href: "https://clerky.carrinho.app/one-checkout/ocmtb/30403256",
       highlighted: true,
       badge: "Mais popular",
     },
@@ -63,7 +63,7 @@ export function Pricing() {
         "Onboarding personalizado",
       ],
       cta: "Falar com vendas",
-      href: "#", // TODO: Link real
+      href: "https://wa.me/5562993557070?text=Olá!%20Quero%20saber%20mais%20sobre%20o%20plano%20Enterprise",
       highlighted: false,
     },
   ];
