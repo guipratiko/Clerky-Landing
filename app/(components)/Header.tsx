@@ -27,7 +27,7 @@ export function Header() {
     { label: "Integrações", href: "#integracoes" },
     { label: "Preços", href: "#precos" },
     { label: "Documentação", href: "#docs" },
-    { label: "Status", href: "#" },
+    { label: "Status", href: "https://app.clerky.com.br/status" },
   ];
 
   return (
