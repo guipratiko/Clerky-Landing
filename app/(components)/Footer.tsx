@@ -72,6 +72,8 @@ export function Footer() {
       title: "Legal",
       links: [
         { label: "Termos de Uso", href: "/legal/termos" },
+        { label: "Política de Privacidade", href: "/legal/politica-privacidade" },
+        { label: "Privacidade do Usuário", href: "/legal/privacidade-usuario" },
         { label: "Privacidade (LGPD)", href: "/legal/privacidade" },
         { label: "Segurança", href: "/legal/seguranca" },
         { label: "Conformidade", href: "/legal/conformidade" },
