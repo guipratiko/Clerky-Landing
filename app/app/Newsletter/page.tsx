@@ -57,25 +57,38 @@ const fakeNewsletterData: NewsletterItem[] = [
   {
     id: "3",
     type: "news",
-    title: "Integração com Shopify agora disponível",
-    description: "Conecte seu WhatsApp diretamente com sua loja Shopify. Receba pedidos, atualize status e envie notificações automaticamente.",
-    fullContent: "Conteúdo completo sobre integração Shopify...",
-    imageUrl: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=400&fit=crop",
-    publishedAt: "2025-01-12T14:00:00Z",
+    title: "MindClerky: Workflows Visuais para Automação WhatsApp",
+    description: "Crie fluxos de automação arrastando e conectando nós. Sistema de workflows visuais com 8 tipos de nós: triggers, condições, respostas, IA, planilhas e mais. Automatize conversas, qualifique leads e integre com Google Sheets e OpenAI.",
+    fullContent: `O MindClerky é um sistema revolucionário de workflows visuais para automatizar conversas no WhatsApp. Com ele, você pode criar fluxos complexos de automação simplesmente arrastando e conectando nós.
+
+**8 Tipos de Nós Disponíveis:**
+
+1. **WhatsApp Trigger** - Inicia o workflow quando uma mensagem chega
+2. **Typebot Trigger** - Inicia via webhook do Typebot com variáveis dinâmicas
+3. **Condition** - Verifica palavras/frases e direciona o fluxo
+4. **Delay** - Pausa a execução por tempo determinado
+5. **Response** - Envia mensagens (texto, imagem, vídeo, áudio, arquivo)
+6. **Spreadsheet** - Salva dados automaticamente no Google Sheets
+7. **OpenAI** - Processa mensagens com IA (GPT-3.5 ou GPT-4)
+8. **End** - Finaliza o workflow
+
+**Funcionalidades Principais:**
+
+- Automação inteligente de atendimento
+- Qualificação automática de leads
+- Integração com Google Sheets
+- Processamento de IA com histórico de conversa
+- Variáveis dinâmicas ({name}, {phone}, variáveis do Typebot)
+- Lógica condicional avançada
+- Prevenção de loops infinitos
+- Atualizações em tempo real via WebSocket
+
+Crie workflows complexos sem código e automatize completamente suas conversas no WhatsApp!`,
+    imageUrl: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&h=400&fit=crop",
+    publishedAt: "2025-01-16T10:00:00Z",
     isActive: true,
-    priority: 8,
-    tags: ["Integração", "E-commerce", "Shopify"]
-  },
-  {
-    id: "4",
-    type: "promotion",
-    title: "Ganhe 3 meses grátis ao indicar um amigo",
-    description: "Indique a Clerky para um amigo e ganhe 3 meses grátis no seu plano atual. Seu amigo também ganha 1 mês grátis!",
-    fullContent: "Detalhes do programa de indicação...",
-    publishedAt: "2025-01-08T09:00:00Z",
-    isActive: true,
-    priority: 7,
-    tags: ["Indicação", "Bônus", "Gratuito"]
+    priority: 10,
+    tags: ["Workflow", "Automação", "MindClerky"]
   },
   {
     id: "5",
