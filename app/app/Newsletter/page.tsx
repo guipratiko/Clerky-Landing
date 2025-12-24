@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Search, Calendar, Tag } from "lucide-react";
+import { Search, Calendar, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -227,20 +227,6 @@ export default function NewsletterPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto max-w-[1200px] px-4 py-8 md:px-6 lg:px-8">
-        {/* Header com botão voltar */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="mb-8"
-        >
-          <Button variant="ghost" asChild>
-            <Link href="/" className="gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Voltar para o App
-            </Link>
-          </Button>
-        </motion.div>
-
         {/* Título Principal */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
