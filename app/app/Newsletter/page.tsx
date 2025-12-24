@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, Search, Calendar, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
@@ -194,7 +195,7 @@ export default function NewsletterPage() {
 
   // Filtrar e ordenar dados
   const filteredData = useMemo(() => {
-    let filtered = fakeNewsletterData.filter(item => {
+    const filtered = fakeNewsletterData.filter(item => {
       // Filtrar por tipo
       if (filter !== "all" && item.type !== filter) return false;
       
@@ -222,15 +223,6 @@ export default function NewsletterPage() {
       return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
     });
   }, [filter, searchQuery]);
-
-  // Extrair todas as tags únicas para filtro (opcional)
-  const allTags = useMemo(() => {
-    const tags = new Set<string>();
-    fakeNewsletterData.forEach(item => {
-      item.tags.forEach(tag => tags.add(tag));
-    });
-    return Array.from(tags).sort();
-  }, []);
 
   return (
     <div className="min-h-screen bg-background pt-24">
@@ -335,11 +327,13 @@ export default function NewsletterPage() {
                   <div className="relative">
                     {item.imageUrl && (
                       <div className="relative h-[200px] w-full overflow-hidden rounded-t-xl">
-                        <img
+                        <Image
                           src={item.imageUrl}
                           alt={item.title}
-                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          loading="lazy"
+                          fill
+                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          unoptimized
                         />
                         <div className="absolute right-3 top-3">
                           <Badge
