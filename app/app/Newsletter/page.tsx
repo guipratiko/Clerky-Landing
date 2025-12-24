@@ -225,7 +225,7 @@ export default function NewsletterPage() {
   }, [filter, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-background pt-24">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto max-w-[1200px] px-4 py-8 md:px-6 lg:px-8">
         {/* Header com botão voltar */}
         <motion.div
