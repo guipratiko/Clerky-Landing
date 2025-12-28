@@ -131,7 +131,7 @@ export default function RootLayout({
     <html lang="pt-BR" className={`${inter.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
       <head>
         {/* Favicon */}
-        <link rel="icon" href="/img/favicon.png" type="image/png" />
+        <link rel="icon" href="/img copy/favicon.png" type="image/png" />
         
         {/* Schema.org JSON-LD */}
         <script
