@@ -24,7 +24,7 @@ export function Pricing() {
         "Suporte por email",
       ],
       cta: "Começar trial",
-      href: "https://app.clerky.com.br/register",
+      href: "https://app.clerky.com.br/signup",
       highlighted: false,
     },
     {

@@ -68,10 +68,10 @@ export function Hero({ enableParticles = true }: HeroProps) {
               className="glow-primary text-base"
             >
               <Link 
-                href="https://app.clerky.com.br/register"
+                href="https://app.clerky.com.br/signup"
                 onClick={(e) => {
                   e.preventDefault();
-                  gtag_report_conversion('https://app.clerky.com.br/register', 1.0, 'BRL');
+                  gtag_report_conversion('https://app.clerky.com.br/signup', 1.0, 'BRL');
                 }}
               >
                 Começar agora

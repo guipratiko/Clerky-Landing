@@ -76,7 +76,7 @@ export function Header() {
             <Link href="https://app.clerky.com.br/">Entrar</Link>
           </Button>
           <Button asChild className="glow-primary">
-            <Link href="https://app.clerky.com.br/register">Começar agora</Link>
+            <Link href="https://app.clerky.com.br/signup">Começar agora</Link>
           </Button>
           <Button variant="outline" asChild>
             <Link href="https://wa.me/5562993557070?text=Olá!%20Quero%20saber%20mais%20sobre%20a%20Clerky" target="_blank" rel="noopener noreferrer">Falar no WhatsApp</Link>
@@ -123,7 +123,7 @@ export function Header() {
                   <Link href="https://app.clerky.com.br/">Entrar</Link>
                 </Button>
                 <Button asChild className="w-full">
-                  <Link href="https://app.clerky.com.br/register">Começar agora</Link>
+                  <Link href="https://app.clerky.com.br/signup">Começar agora</Link>
                 </Button>
                 <Button variant="outline" asChild className="w-full">
                   <Link href="https://wa.me/5562993557070?text=Olá!%20Quero%20saber%20mais%20sobre%20a%20Clerky" target="_blank" rel="noopener noreferrer">Falar no WhatsApp</Link>
