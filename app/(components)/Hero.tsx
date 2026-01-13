@@ -30,29 +30,28 @@ export function Hero({ enableParticles = true }: HeroProps) {
       {/* Content */}
       <div className="container relative z-10 mx-auto px-4 py-20 lg:px-8">
         <div className="flex flex-col items-center text-center">
-          {/* Headline */}
+          {/* Headline - Nome do App */}
           <motion.h1
-            className="gradient-text mb-6 text-5xl font-bold leading-tight md:text-6xl lg:text-7xl"
+            className="gradient-text mb-4 text-5xl font-bold leading-tight md:text-6xl lg:text-7xl"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            Conecte seu WhatsApp
-            <br />
-            a qualquer sistema.
-            <br />
-            <span className="text-text-headline">Sem código.</span>
+            Clerky
           </motion.h1>
 
-          {/* Subtitle */}
+          {/* Subtitle - Descrição do Produto */}
           <motion.div
             className="mb-8 max-w-3xl space-y-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
+            <p className="text-xl font-semibold text-text-headline md:text-2xl">
+              Plataforma de CRM e automação para WhatsApp
+            </p>
             <p className="text-lg text-text-body md:text-xl">
-              A Clerky é uma plataforma de CRM e automação para WhatsApp, que ajuda empresas a gerenciar contatos, disparos em massa, workflows e atendimento com inteligência artificial.
+              A Clerky ajuda empresas a gerenciar contatos, disparos em massa, workflows e atendimento com inteligência artificial.
             </p>
             <p className="text-base text-text-body md:text-lg">
               Conecte seu WhatsApp a qualquer sistema via API ou Webhook. Crie agentes de IA sem código, automatize vendas e suporte, dispare campanhas e gerencie clientes no CRM Kanban.
