@@ -45,15 +45,19 @@ export function Hero({ enableParticles = true }: HeroProps) {
           </motion.h1>
 
           {/* Subtitle */}
-          <motion.p
-            className="mb-8 max-w-3xl text-lg text-text-body md:text-xl"
+          <motion.div
+            className="mb-8 max-w-3xl space-y-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            A Clerky é o Hub de Integração com IA: crie agentes, automatize
-            vendas e suporte, dispare campanhas e gerencie clientes no Kanban.
-          </motion.p>
+            <p className="text-lg text-text-body md:text-xl">
+              A Clerky é uma plataforma de CRM e automação para WhatsApp, que ajuda empresas a gerenciar contatos, disparos em massa, workflows e atendimento com inteligência artificial.
+            </p>
+            <p className="text-base text-text-body md:text-lg">
+              Conecte seu WhatsApp a qualquer sistema via API ou Webhook. Crie agentes de IA sem código, automatize vendas e suporte, dispare campanhas e gerencie clientes no CRM Kanban.
+            </p>
+          </motion.div>
 
           {/* CTAs */}
           <motion.div

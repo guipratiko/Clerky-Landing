@@ -50,7 +50,42 @@ export default function PoliticaPrivacidadePage() {
         </ul>
 
         <h3 className="mt-6 text-xl font-semibold text-text-headline">
-          1.3. Informações de pagamento
+          1.3. Dados do Google (Google Sheets e Google Drive)
+        </h3>
+        <p className="text-text-body">
+          Quando você autoriza a conexão com sua conta Google, solicitamos acesso aos seguintes serviços:
+        </p>
+        <ul className="list-disc space-y-2 pl-6 text-text-body">
+          <li><strong>Google Sheets:</strong> Para salvar e sincronizar leads automaticamente em planilhas</li>
+          <li><strong>Google Drive:</strong> Para armazenar arquivos e documentos relacionados aos leads</li>
+        </ul>
+        <p className="mt-4 text-text-body">
+          <strong>Como utilizamos esses dados:</strong>
+        </p>
+        <ul className="list-disc space-y-2 pl-6 text-text-body">
+          <li>Os dados do Google Sheets e Google Drive funcionam como nós dentro do MindClerky para salvar leads que vêm do WhatsApp ou Typebot</li>
+          <li>As permissões são usadas exclusivamente para sincronizar e armazenar leads e informações relacionadas</li>
+          <li>Não acessamos, lemos ou modificamos outros arquivos ou planilhas que não sejam relacionados ao uso do Clerky</li>
+          <li>Não vendemos, compartilhamos ou comercializamos dados do Google com terceiros</li>
+        </ul>
+        <p className="mt-4 text-text-body">
+          <strong>Armazenamento:</strong> Os dados sincronizados com Google Sheets e Google Drive são armazenados nos servidores do Google, seguindo as políticas de segurança e privacidade do Google. O Clerky mantém apenas referências e metadados necessários para o funcionamento da integração.
+        </p>
+        <p className="mt-4 text-text-body">
+          <strong>Revogação de acesso:</strong> Você pode revogar o acesso à sua conta Google a qualquer momento através de{" "}
+          <a
+            href="https://myaccount.google.com/permissions"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-brand-500 hover:text-brand-400 underline"
+          >
+            myaccount.google.com/permissions
+          </a>
+          . Ao revogar o acesso, a sincronização automática será interrompida, mas os dados já sincronizados permanecerão nos seus arquivos do Google.
+        </p>
+
+        <h3 className="mt-6 text-xl font-semibold text-text-headline">
+          1.4. Informações de pagamento
         </h3>
         <p className="text-text-body">
           Compras e assinaturas são processadas exclusivamente pela App Store. O Clerky não coleta, processa ou armazena dados de cartão de crédito.
@@ -74,6 +109,7 @@ export default function PoliticaPrivacidadePage() {
           <li>Criar e gerenciar sua conta</li>
           <li>Processar e validar sua assinatura Clerky PRO</li>
           <li>Fornecer acesso a recursos premium</li>
+          <li>Sincronizar leads do WhatsApp e Typebot com Google Sheets e Google Drive</li>
           <li>Enviar notificações importantes sobre sua conta</li>
           <li>Melhorar o desempenho e a experiência do app</li>
           <li>Garantir a segurança e prevenir fraudes</li>
@@ -130,7 +166,17 @@ export default function PoliticaPrivacidadePage() {
           <li>Acessar suas informações</li>
           <li>Atualizar seus dados</li>
           <li>Solicitar exclusão da sua conta</li>
-          <li>Revogar permissões concedidas</li>
+          <li>Revogar permissões concedidas, incluindo acesso ao Google (através de{" "}
+            <a
+              href="https://myaccount.google.com/permissions"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-brand-500 hover:text-brand-400 underline"
+            >
+              myaccount.google.com/permissions
+            </a>
+            )
+          </li>
           <li>Solicitar esclarecimentos sobre o uso dos seus dados</li>
         </ul>
         <p className="mt-4 text-text-body">

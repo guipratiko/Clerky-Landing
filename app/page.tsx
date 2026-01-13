@@ -3,6 +3,7 @@
 import { SmoothScroll } from "./(components)/ui/SmoothScroll";
 import { Hero } from "./(components)/Hero";
 import { Brands } from "./(components)/Brands";
+import { GoogleIntegration } from "./(components)/GoogleIntegration";
 import { Features } from "./(components)/Features";
 import { HowItWorks } from "./(components)/HowItWorks";
 import { Integrations } from "./(components)/Integrations";
@@ -25,6 +26,9 @@ export default function Home() {
 
       {/* Brands/Social Proof */}
       <Brands />
+
+      {/* About App & Google Integration */}
+      <GoogleIntegration />
 
       {/* Features Overview */}
       <Features />

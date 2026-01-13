@@ -72,6 +72,20 @@ export function Header() {
 
         {/* Desktop CTAs */}
         <div className="hidden items-center space-x-4 lg:flex">
+          <div className="flex items-center space-x-4 border-r border-border pr-4">
+            <Link
+              href="/legal/politica-privacidade"
+              className="text-xs text-text-body transition-colors hover:text-primary"
+            >
+              Privacidade
+            </Link>
+            <Link
+              href="/legal/termos"
+              className="text-xs text-text-body transition-colors hover:text-primary"
+            >
+              Termos
+            </Link>
+          </div>
           <Button variant="ghost" asChild>
             <Link href="https://app.clerky.com.br/">Entrar</Link>
           </Button>
@@ -118,7 +132,24 @@ export function Header() {
                   {link.label}
                 </Link>
               ))}
-              <div className="flex flex-col space-y-3 pt-4">
+              <div className="flex flex-col space-y-3 border-t border-border pt-4">
+                <div className="flex items-center justify-center space-x-4 pb-2">
+                  <Link
+                    href="/legal/politica-privacidade"
+                    className="text-sm text-text-body transition-colors hover:text-primary"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Política de Privacidade
+                  </Link>
+                  <span className="text-text-body">•</span>
+                  <Link
+                    href="/legal/termos"
+                    className="text-sm text-text-body transition-colors hover:text-primary"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Termos de Uso
+                  </Link>
+                </div>
                 <Button variant="ghost" asChild className="w-full">
                   <Link href="https://app.clerky.com.br/">Entrar</Link>
                 </Button>
