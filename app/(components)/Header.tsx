@@ -30,6 +30,17 @@ export function Header() {
     { label: "Status", href: "https://app.clerky.com.br/status" },
   ];
 
+  const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+        setIsMobileMenuOpen(false);
+      }
+    }
+  };
+
   return (
     <motion.header
       className={cn(
@@ -44,7 +55,7 @@ export function Header() {
     >
       <div className="container mx-auto flex items-center justify-between px-4 py-4 lg:px-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center">
+        <Link href="/" className="flex items-center pl-4 lg:pl-8">
           <Image
             src="/img/logo3.png"
             alt="Clerky Logo"
@@ -64,6 +75,7 @@ export function Header() {
               key={link.label}
               href={link.href}
               className="text-sm font-medium text-text-body transition-colors hover:text-primary"
+              onClick={(e) => handleSmoothScroll(e, link.href)}
             >
               {link.label}
             </Link>
@@ -72,20 +84,6 @@ export function Header() {
 
         {/* Desktop CTAs */}
         <div className="hidden items-center space-x-4 lg:flex">
-          <div className="flex items-center space-x-4 border-r border-border pr-4">
-            <Link
-              href="/legal/politica-privacidade"
-              className="text-xs text-text-body transition-colors hover:text-primary"
-            >
-              Privacidade
-            </Link>
-            <Link
-              href="/legal/termos"
-              className="text-xs text-text-body transition-colors hover:text-primary"
-            >
-              Termos
-            </Link>
-          </div>
           <Button variant="ghost" asChild>
             <Link href="https://app.clerky.com.br/">Entrar</Link>
           </Button>
@@ -127,29 +125,15 @@ export function Header() {
                   key={link.label}
                   href={link.href}
                   className="text-base font-medium text-text-body transition-colors hover:text-primary"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={(e) => {
+                    handleSmoothScroll(e, link.href);
+                    setIsMobileMenuOpen(false);
+                  }}
                 >
                   {link.label}
                 </Link>
               ))}
               <div className="flex flex-col space-y-3 border-t border-border pt-4">
-                <div className="flex items-center justify-center space-x-4 pb-2">
-                  <Link
-                    href="/legal/politica-privacidade"
-                    className="text-sm text-text-body transition-colors hover:text-primary"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Política de Privacidade
-                  </Link>
-                  <span className="text-text-body">•</span>
-                  <Link
-                    href="/legal/termos"
-                    className="text-sm text-text-body transition-colors hover:text-primary"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Termos de Uso
-                  </Link>
-                </div>
                 <Button variant="ghost" asChild className="w-full">
                   <Link href="https://app.clerky.com.br/">Entrar</Link>
                 </Button>

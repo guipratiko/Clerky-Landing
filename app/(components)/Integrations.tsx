@@ -1,18 +1,23 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Database, Cloud, Workflow, Table } from "lucide-react";
+import { Database, Cloud, Workflow, Table, MessageSquare, Bot, Brain } from "lucide-react";
 import { GlassCard } from "./ui/GlassCard";
 
 export function Integrations() {
   const integrations = [
+    { name: "Meta (Instagram)", category: "Redes Sociais" },
+    { name: "WhatsApp", category: "Mensageria" },
+    { name: "OpenAI (GPT-4)", category: "IA" },
+    { name: "Typebot", category: "Chatbots" },
+    { name: "Google Sheets", category: "Planilhas" },
+    { name: "Google Drive", category: "Armazenamento" },
     { name: "Salesforce", category: "CRM" },
     { name: "HubSpot", category: "CRM" },
     { name: "SAP", category: "ERP" },
     { name: "n8n", category: "Automação" },
     { name: "Zapier", category: "Automação" },
     { name: "Make", category: "Automação" },
-    { name: "Google Sheets", category: "Planilhas" },
     { name: "Airtable", category: "Planilhas" },
     { name: "PostgreSQL", category: "Banco de Dados" },
     { name: "MongoDB", category: "Banco de Dados" },
@@ -24,10 +29,15 @@ export function Integrations() {
     string,
     React.ComponentType<{ className?: string }>
   > = {
+    "Redes Sociais": MessageSquare,
+    WhatsApp: MessageSquare,
+    IA: Brain,
+    Chatbots: Bot,
     CRM: Database,
     ERP: Cloud,
     Automação: Workflow,
     Planilhas: Table,
+    Armazenamento: Cloud,
     "Banco de Dados": Database,
     "E-commerce": Cloud,
   };

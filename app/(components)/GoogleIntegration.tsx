@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Shield, FileSpreadsheet, FolderOpen, Lock } from "lucide-react";
+import { Shield, FileSpreadsheet, FolderOpen, Lock, MessageSquare, Bot, Brain, Users } from "lucide-react";
 import { GlassCard } from "./ui/GlassCard";
 import Link from "next/link";
 
@@ -19,7 +19,7 @@ export function GoogleIntegration() {
             Sobre o aplicativo
           </h2>
           <p className="mx-auto max-w-3xl text-lg text-text-body">
-            A Clerky é uma plataforma de CRM e automação para WhatsApp, que ajuda empresas a gerenciar contatos, disparos em massa, workflows e atendimento com inteligência artificial.
+            O Clerky é uma plataforma de automação e gestão de comunicação que centraliza WhatsApp, Instagram e outras integrações em um único ambiente. A ferramenta atende empresas que precisam automatizar atendimento, gerenciar relacionamento com clientes e executar campanhas de comunicação em escala.
           </p>
         </motion.div>
 
@@ -40,31 +40,85 @@ export function GoogleIntegration() {
               </div>
               <div className="flex-1 text-center md:text-left">
                 <h3 className="mb-4 text-2xl font-semibold text-text-headline">
-                  Conexão com Google
+                  Integrações e Permissões
                 </h3>
-                <p className="mb-4 text-text-body">
-                  Nosso aplicativo se conecta à sua conta Google para sincronizar dados com Google Sheets e Google Drive, funcionando como nós dentro do MindClerky para salvar leads que vêm do WhatsApp ou Typebot.
-                </p>
                 <p className="mb-6 text-text-body">
-                  As permissões solicitadas são usadas exclusivamente para:
+                  O Clerky se conecta a diversos serviços para oferecer funcionalidades completas. Todas as permissões solicitadas são usadas exclusivamente para as funcionalidades descritas abaixo:
                 </p>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="flex items-start gap-3">
-                    <FileSpreadsheet className="mt-1 h-5 w-5 flex-shrink-0 text-primary" />
-                    <div>
-                      <h4 className="font-semibold text-text-headline">Google Sheets</h4>
-                      <p className="text-sm text-text-body">
-                        Salvar e sincronizar leads automaticamente em planilhas
-                      </p>
+                
+                <div className="mb-6 space-y-4">
+                  <div className="rounded-lg border border-border bg-base-50 p-4">
+                    <div className="mb-3 flex items-start gap-3">
+                      <FileSpreadsheet className="mt-1 h-5 w-5 flex-shrink-0 text-primary" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-text-headline">Google (Sheets e Drive)</h4>
+                        <p className="mt-1 text-sm text-text-body">
+                          Sincronização de dados com Google Sheets e Google Drive, funcionando como nós dentro do MindClerky para salvar leads que vêm do WhatsApp ou Typebot. Armazenamento de arquivos e documentos relacionados aos leads.
+                        </p>
+                        <p className="mt-2 text-xs text-text-body">
+                          Revogar acesso: <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer" className="text-primary underline">myaccount.google.com/permissions</a>
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <FolderOpen className="mt-1 h-5 w-5 flex-shrink-0 text-primary" />
-                    <div>
-                      <h4 className="font-semibold text-text-headline">Google Drive</h4>
-                      <p className="text-sm text-text-body">
-                        Armazenar arquivos e documentos relacionados aos leads
+
+                  <div className="rounded-lg border border-border bg-base-50 p-4">
+                    <div className="mb-3 flex items-start gap-3">
+                      <MessageSquare className="mt-1 h-5 w-5 flex-shrink-0 text-pink-500" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-text-headline">Meta (Instagram)</h4>
+                        <p className="mt-1 text-sm text-text-body">
+                          Conexão de contas Instagram via OAuth Meta para automações baseadas em palavras-chave, respostas automáticas a mensagens diretas e comentários, envio de DMs e sequências de mensagens.
+                        </p>
+                        <p className="mt-2 text-xs text-text-body">
+                          Revogar acesso: <a href="https://www.facebook.com/settings?tab=applications" target="_blank" rel="noopener noreferrer" className="text-primary underline">facebook.com/settings</a>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-lg border border-border bg-base-50 p-4">
+                    <div className="mb-3 flex items-start gap-3">
+                      <Brain className="mt-1 h-5 w-5 flex-shrink-0 text-green-500" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-text-headline">OpenAI (GPT-4, GPT-3.5)</h4>
+                        <p className="mt-1 text-sm text-text-body">
+                          Processamento de linguagem natural para agentes de IA, respostas automáticas com contexto, memória de conversas, transcrição de áudio e qualificação de leads.
+                        </p>
+                        <p className="mt-2 text-xs text-text-body">
+                          Dados processados: mensagens de conversas, histórico de interações. Não armazenamos dados pessoais no OpenAI.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-lg border border-border bg-base-50 p-4">
+                    <div className="mb-3 flex items-start gap-3">
+                      <Bot className="mt-1 h-5 w-5 flex-shrink-0 text-blue-500" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-text-headline">Typebot</h4>
+                        <p className="mt-1 text-sm text-text-body">
+                          Integração com chatbots externos do Typebot para processar leads e conversas, funcionando como nós dentro do MindClerky.
+                        </p>
+                        <p className="mt-2 text-xs text-text-body">
+                          Dados compartilhados: informações de conversas e leads para processamento no Typebot.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-lg border border-border bg-base-50 p-4">
+                    <div className="mb-3 flex items-start gap-3">
+                      <Users className="mt-1 h-5 w-5 flex-shrink-0 text-purple-500" />
+                      <div className="flex-1">
+                      <h4 className="font-semibold text-text-headline">WhatsApp</h4>
+                      <p className="mt-1 text-sm text-text-body">
+                        Conexão de múltiplas instâncias WhatsApp, geração de QR Code, monitoramento de status, gerenciamento de grupos e envio de mensagens.
                       </p>
+                        <p className="mt-2 text-xs text-text-body">
+                          Dados coletados: mensagens, contatos, grupos e histórico de conversas para funcionamento do CRM e automações.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>

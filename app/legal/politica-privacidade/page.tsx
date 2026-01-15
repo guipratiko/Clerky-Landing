@@ -50,7 +50,52 @@ export default function PoliticaPrivacidadePage() {
         </ul>
 
         <h3 className="mt-6 text-xl font-semibold text-text-headline">
-          1.3. Dados do Google (Google Sheets e Google Drive)
+          1.3. Dados do WhatsApp
+        </h3>
+        <p className="text-text-body">
+          Quando você conecta instâncias WhatsApp, coletamos:
+        </p>
+        <ul className="list-disc space-y-2 pl-6 text-text-body">
+          <li>Mensagens enviadas e recebidas</li>
+          <li>Contatos e informações de perfil</li>
+          <li>Dados de grupos WhatsApp (participantes, administradores, histórico)</li>
+          <li>Status de conexão e QR Codes</li>
+          <li>Histórico de conversas</li>
+        </ul>
+        <p className="mt-4 text-text-body">
+          <strong>Como utilizamos:</strong> Esses dados são usados para gerenciar múltiplas instâncias WhatsApp, operar o CRM Kanban, executar disparos em massa, gerenciar grupos e fornecer automações. Os dados são armazenados em nossos servidores seguros e criptografados.
+        </p>
+
+        <h3 className="mt-6 text-xl font-semibold text-text-headline">
+          1.4. Dados do Meta/Instagram
+        </h3>
+        <p className="text-text-body">
+          Quando você autoriza a conexão com sua conta Instagram via OAuth Meta, coletamos:
+        </p>
+        <ul className="list-disc space-y-2 pl-6 text-text-body">
+          <li>Informações básicas do perfil Instagram</li>
+          <li>Mensagens diretas (DMs) recebidas e enviadas</li>
+          <li>Comentários em posts (quando autorizado)</li>
+          <li>Interações e engajamento</li>
+        </ul>
+        <p className="mt-4 text-text-body">
+          <strong>Como utilizamos:</strong> Esses dados são usados para automações do Insta-Clerky, incluindo respostas automáticas a DMs e comentários, envio de sequências de mensagens e geração de relatórios. Os dados são processados de acordo com as políticas do Meta.
+        </p>
+        <p className="mt-4 text-text-body">
+          <strong>Revogação de acesso:</strong> Você pode revogar o acesso ao Instagram a qualquer momento através de{" "}
+          <a
+            href="https://www.facebook.com/settings?tab=applications"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-brand-500 hover:text-brand-400 underline"
+          >
+            facebook.com/settings
+          </a>
+          .
+        </p>
+
+        <h3 className="mt-6 text-xl font-semibold text-text-headline">
+          1.5. Dados do Google (Google Sheets e Google Drive)
         </h3>
         <p className="text-text-body">
           Quando você autoriza a conexão com sua conta Google, solicitamos acesso aos seguintes serviços:
@@ -85,7 +130,67 @@ export default function PoliticaPrivacidadePage() {
         </p>
 
         <h3 className="mt-6 text-xl font-semibold text-text-headline">
-          1.4. Informações de pagamento
+          1.6. Dados do OpenAI
+        </h3>
+        <p className="text-text-body">
+          Quando você utiliza agentes de IA do Clerky, enviamos dados para processamento no OpenAI:
+        </p>
+        <ul className="list-disc space-y-2 pl-6 text-text-body">
+          <li>Mensagens de conversas para processamento de linguagem natural</li>
+          <li>Contexto de conversas para respostas inteligentes</li>
+          <li>Áudios para transcrição (quando aplicável)</li>
+        </ul>
+        <p className="mt-4 text-text-body">
+          <strong>Como utilizamos:</strong> Os dados são enviados ao OpenAI (GPT-4, GPT-3.5) exclusivamente para processamento de IA e geração de respostas. Não armazenamos dados pessoais no OpenAI. O processamento segue as políticas de privacidade do OpenAI.
+        </p>
+        <p className="mt-4 text-text-body">
+          <strong>Retenção:</strong> O OpenAI pode reter dados temporariamente para melhorar seus modelos, conforme sua política. Você pode revisar a política do OpenAI em{" "}
+          <a
+            href="https://openai.com/policies/privacy-policy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-brand-500 hover:text-brand-400 underline"
+          >
+            openai.com/policies/privacy-policy
+          </a>
+          .
+        </p>
+
+        <h3 className="mt-6 text-xl font-semibold text-text-headline">
+          1.7. Dados do Typebot
+        </h3>
+        <p className="text-text-body">
+          Quando você integra chatbots do Typebot com o Clerky:
+        </p>
+        <ul className="list-disc space-y-2 pl-6 text-text-body">
+          <li>Dados de conversas são compartilhados com o Typebot para processamento</li>
+          <li>Leads e informações coletadas pelo Typebot são sincronizados com o Clerky</li>
+        </ul>
+        <p className="mt-4 text-text-body">
+          <strong>Como utilizamos:</strong> O Typebot funciona como um nó dentro do MindClerky para processar leads e conversas. Os dados compartilhados são limitados ao necessário para o funcionamento da integração.
+        </p>
+
+        <h3 className="mt-6 text-xl font-semibold text-text-headline">
+          1.8. Dados de aplicativos móveis (iOS e Android)
+        </h3>
+        <p className="text-text-body">
+          Quando você utiliza os aplicativos móveis do Clerky:
+        </p>
+        <ul className="list-disc space-y-2 pl-6 text-text-body">
+          <li>Identificadores do dispositivo (ID do dispositivo, modelo, versão do sistema operacional)</li>
+          <li>Dados de autenticação biométrica (Face ID/Touch ID) - processados localmente, não enviados aos nossos servidores</li>
+          <li>Logs de uso e estatísticas</li>
+          <li>Notificações push (quando autorizado)</li>
+        </ul>
+        <p className="mt-4 text-text-body">
+          <strong>Como utilizamos:</strong> Esses dados são usados para autenticação segura, melhorar a experiência do app e enviar notificações importantes. A autenticação biométrica é processada exclusivamente no dispositivo.
+        </p>
+        <p className="mt-4 text-text-body">
+          <strong>Armazenamento:</strong> Dados de aplicativos móveis são armazenados em nossos servidores seguros. Dados biométricos nunca saem do dispositivo.
+        </p>
+
+        <h3 className="mt-6 text-xl font-semibold text-text-headline">
+          1.9. Informações de pagamento
         </h3>
         <p className="text-text-body">
           Compras e assinaturas são processadas exclusivamente pela App Store. O Clerky não coleta, processa ou armazena dados de cartão de crédito.
@@ -109,7 +214,12 @@ export default function PoliticaPrivacidadePage() {
           <li>Criar e gerenciar sua conta</li>
           <li>Processar e validar sua assinatura Clerky PRO</li>
           <li>Fornecer acesso a recursos premium</li>
-          <li>Sincronizar leads do WhatsApp e Typebot com Google Sheets e Google Drive</li>
+          <li>Sincronizar leads do WhatsApp, Instagram e Typebot com Google Sheets e Google Drive</li>
+          <li>Processar mensagens com OpenAI para respostas automáticas inteligentes</li>
+          <li>Gerenciar múltiplas instâncias WhatsApp e grupos</li>
+          <li>Automatizar respostas no Instagram (DMs e comentários)</li>
+          <li>Executar workflows visuais (MindClerky) com integrações</li>
+          <li>Fornecer acesso através de aplicativos móveis iOS e Android</li>
           <li>Enviar notificações importantes sobre sua conta</li>
           <li>Melhorar o desempenho e a experiência do app</li>
           <li>Garantir a segurança e prevenir fraudes</li>
@@ -166,16 +276,12 @@ export default function PoliticaPrivacidadePage() {
           <li>Acessar suas informações</li>
           <li>Atualizar seus dados</li>
           <li>Solicitar exclusão da sua conta</li>
-          <li>Revogar permissões concedidas, incluindo acesso ao Google (através de{" "}
-            <a
-              href="https://myaccount.google.com/permissions"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-brand-500 hover:text-brand-400 underline"
-            >
-              myaccount.google.com/permissions
-            </a>
-            )
+          <li>Revogar permissões concedidas:
+            <ul className="mt-2 list-disc space-y-1 pl-6">
+              <li>Google: <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer" className="text-brand-500 hover:text-brand-400 underline">myaccount.google.com/permissions</a></li>
+              <li>Meta/Instagram: <a href="https://www.facebook.com/settings?tab=applications" target="_blank" rel="noopener noreferrer" className="text-brand-500 hover:text-brand-400 underline">facebook.com/settings</a></li>
+              <li>WhatsApp: desconectando instâncias no Clerky ou através das configurações da conta</li>
+            </ul>
           </li>
           <li>Solicitar esclarecimentos sobre o uso dos seus dados</li>
         </ul>
@@ -190,24 +296,19 @@ export default function PoliticaPrivacidadePage() {
           6. Dados de Assinaturas e Compras (In-App Purchases)
         </h2>
         <p className="text-text-body">
-          Para assinaturas pelo iOS:
+          Para assinaturas:
         </p>
         <ul className="list-disc space-y-2 pl-6 text-text-body">
-          <li>A Apple gerencia as cobranças, cancelamentos e reembolsos</li>
-          <li>O Clerky não tem acesso a dados financeiros sensíveis</li>
-          <li>O status da assinatura é verificado por recibos fornecidos pela Apple</li>
+          <li><strong>iOS:</strong> A Apple gerencia as cobranças, cancelamentos e reembolsos. O Clerky não tem acesso a dados financeiros sensíveis. O status da assinatura é verificado por recibos fornecidos pela Apple.</li>
+          <li><strong>Android:</strong> O Google Play gerencia as cobranças, cancelamentos e reembolsos. O Clerky não tem acesso a dados financeiros sensíveis. O status da assinatura é verificado através do Google Play Billing.</li>
         </ul>
         <p className="mt-4 text-text-body">
-          Mais detalhes podem ser conferidos na{" "}
-          <a
-            href="https://www.apple.com/legal/privacy/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-brand-500 hover:text-brand-400 underline"
-          >
-            Política da Apple
-          </a>.
+          Mais detalhes podem ser conferidos nas políticas:
         </p>
+        <ul className="list-disc space-y-2 pl-6 text-text-body">
+          <li><a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener noreferrer" className="text-brand-500 hover:text-brand-400 underline">Política de Privacidade da Apple</a></li>
+          <li><a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-brand-500 hover:text-brand-400 underline">Política de Privacidade do Google</a></li>
+        </ul>
 
         <h2 className="mt-8 text-2xl font-bold text-text-headline">
           7. Cookies e Tecnologias Semelhantes

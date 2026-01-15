@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ChevronDown, Zap, Webhook, Kanban, Send } from "lucide-react";
+import { ChevronDown, Zap, Webhook, Kanban, Send, Instagram, Workflow, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Particles } from "./ui/Particles";
@@ -16,9 +16,11 @@ interface HeroProps {
 export function Hero({ enableParticles = true }: HeroProps) {
   const badges = [
     { icon: Zap, label: "IA sem código" },
-    { icon: Webhook, label: "API & Webhook" },
+    { icon: Instagram, label: "WhatsApp & Instagram" },
+    { icon: Workflow, label: "Workflows Visuais" },
     { icon: Kanban, label: "CRM Kanban" },
     { icon: Send, label: "Disparo em Massa" },
+    { icon: Smartphone, label: "Apps iOS & Android" },
   ];
 
   return (
@@ -30,31 +32,21 @@ export function Hero({ enableParticles = true }: HeroProps) {
       {/* Content */}
       <div className="container relative z-10 mx-auto px-4 py-20 lg:px-8">
         <div className="flex flex-col items-center text-center">
-          {/* Headline - Nome do App */}
-          <motion.h1
-            className="gradient-text mb-4 text-5xl font-bold leading-tight md:text-6xl lg:text-7xl"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            Clerky
-          </motion.h1>
-
-          {/* Subtitle - Descrição do Produto */}
+          {/* Headline - Descrição do Produto */}
           <motion.div
             className="mb-8 max-w-3xl space-y-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <p className="text-xl font-semibold text-text-headline md:text-2xl">
-              Plataforma de CRM e automação para WhatsApp
-            </p>
+            <h1 className="gradient-text mb-4 text-4xl font-bold leading-tight md:text-5xl lg:text-6xl">
+              Plataforma de automação e gestão de comunicação multicanal
+            </h1>
             <p className="text-lg text-text-body md:text-xl">
-              A Clerky ajuda empresas a gerenciar contatos, disparos em massa, workflows e atendimento com inteligência artificial.
+              O Clerky é uma plataforma de automação e gestão de comunicação que centraliza WhatsApp, Instagram e outras integrações em um único ambiente. A ferramenta atende empresas que precisam automatizar atendimento, gerenciar relacionamento com clientes e executar campanhas de comunicação em escala.
             </p>
             <p className="text-base text-text-body md:text-lg">
-              Conecte seu WhatsApp a qualquer sistema via API ou Webhook. Crie agentes de IA sem código, automatize vendas e suporte, dispare campanhas e gerencie clientes no CRM Kanban.
+              Conecte múltiplas contas WhatsApp, Instagram e outros canais. Crie agentes de IA, workflows visuais, gerencie grupos, dispare campanhas e organize tudo no CRM Kanban. Tudo isso disponível também em apps nativos para iOS e Android.
             </p>
           </motion.div>
 
@@ -80,8 +72,24 @@ export function Hero({ enableParticles = true }: HeroProps) {
                 Começar agora
               </Link>
             </Button>
-            <Button size="lg" variant="outline" asChild className="text-base">
-              <Link href="#integracoes">Ver integrações</Link>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              asChild 
+              className="text-base"
+            >
+              <Link 
+                href="#integracoes"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const element = document.querySelector("#integracoes");
+                  if (element) {
+                    element.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }
+                }}
+              >
+                Ver integrações
+              </Link>
             </Button>
           </motion.div>
 

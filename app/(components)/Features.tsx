@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Bot, Plug, Kanban, Send, FileText } from "lucide-react";
+import { Bot, Plug, Kanban, Send, FileText, Instagram, Workflow, Users, Smartphone, MessageSquare } from "lucide-react";
 import { GlassCard } from "./ui/GlassCard";
 
 export function Features() {
@@ -10,29 +10,57 @@ export function Features() {
       icon: Bot,
       title: "Agentes de IA sem código",
       description:
-        "Crie agentes inteligentes para vendas, atendimento, suporte e prospecção. Configure personalidades e respostas sem programar.",
+        "Integração com OpenAI (GPT-4, GPT-3.5). Respostas automáticas com contexto, memória de conversas, transcrição de áudio e qualificação de leads.",
       gradient: "from-primary to-secondary",
     },
     {
       icon: Plug,
-      title: "Hub WhatsApp ↔ Sistemas",
+      title: "Múltiplas instâncias WhatsApp",
       description:
-        "Conecte seu WhatsApp a qualquer sistema via API ou Webhook. Integração bidirecional completa e em tempo real.",
+        "Conexão de múltiplas contas WhatsApp. Geração de QR Code, monitoramento de status em tempo real e configuração de webhooks.",
       gradient: "from-secondary to-primary",
     },
     {
-      icon: Kanban,
-      title: "CRM Kanban",
+      icon: Instagram,
+      title: "Automações para Instagram",
       description:
-        "Gerencie seus contatos e negociações com pipeline visual. Arraste, solte, adicione notas e tags em um board intuitivo.",
+        "Conexão via OAuth Meta. Automações baseadas em palavras-chave, respostas automáticas a DMs e comentários, sequências de mensagens e relatórios.",
+      gradient: "from-pink-500 to-purple-600",
+    },
+    {
+      icon: Kanban,
+      title: "CRM Kanban integrado",
+      description:
+        "Organização de contatos em colunas personalizáveis, histórico de conversas, envio de mensagens (texto, mídia, áudio, arquivos), busca e filtros.",
       gradient: "from-primary to-success",
     },
     {
       icon: Send,
-      title: "Disparo em Massa",
+      title: "Disparo em massa",
       description:
-        "Envie campanhas segmentadas com agendamento inteligente. Métricas detalhadas de entrega, leitura e respostas.",
+        "Templates personalizáveis, agendamento, controle de velocidade, validação de contatos, exclusão automática e relatórios detalhados.",
       gradient: "from-success to-primary",
+    },
+    {
+      icon: Workflow,
+      title: "Workflows visuais (MindClerky)",
+      description:
+        "Editor visual de fluxos, nós condicionais, integração com Typebot e Google Sheets, processamento com OpenAI e webhooks personalizados.",
+      gradient: "from-secondary to-primary",
+    },
+    {
+      icon: Users,
+      title: "Gerenciador de grupos WhatsApp",
+      description:
+        "Visualização e criação de grupos, edição de informações, configuração de permissões, códigos de convite, mensagens automáticas e histórico.",
+      gradient: "from-primary to-secondary",
+    },
+    {
+      icon: Smartphone,
+      title: "Apps iOS e Android nativos",
+      description:
+        "Aplicativos nativos com autenticação biométrica (Face ID/Touch ID), acesso às funcionalidades principais e sincronização em tempo real.",
+      gradient: "from-blue-500 to-cyan-500",
     },
     {
       icon: FileText,

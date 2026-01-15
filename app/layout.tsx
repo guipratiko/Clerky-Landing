@@ -17,20 +17,31 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Clerky - Hub de Integração WhatsApp com IA",
+  title: "Clerky - Plataforma de Automação e Gestão de Comunicação Multicanal",
   description:
-    "Conecte seu WhatsApp a qualquer sistema. A Clerky é o Hub de Integração com IA: crie agentes, automatize vendas e suporte, dispare campanhas e gerencie clientes no Kanban.",
+    "O Clerky é uma plataforma de automação e gestão de comunicação que centraliza WhatsApp, Instagram e outras integrações. Automatize atendimento, gerencie relacionamento com clientes e execute campanhas em escala.",
   keywords: [
     "WhatsApp",
+    "Instagram",
+    "Automação",
+    "Comunicação Multicanal",
+    "CRM",
+    "Kanban",
+    "IA",
+    "Agente de IA",
+    "OpenAI",
+    "GPT-4",
+    "Disparo em Massa",
+    "Workflows",
+    "MindClerky",
+    "Typebot",
+    "Meta",
     "API",
     "Webhook",
     "Integração",
-    "IA",
-    "Agente",
-    "CRM",
-    "Kanban",
-    "Disparo em Massa",
-    "Automação",
+    "Apps Móveis",
+    "iOS",
+    "Android",
   ],
   authors: [{ name: "Clerky" }],
   creator: "Clerky",
@@ -45,9 +56,9 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Clerky - Hub de Integração WhatsApp com IA",
+    title: "Clerky - Plataforma de Automação e Gestão de Comunicação Multicanal",
     description:
-      "Conecte seu WhatsApp a qualquer sistema via API ou Webhook. Crie agentes de IA sem código, gerencie no CRM Kanban e automatize campanhas.",
+      "Centralize WhatsApp, Instagram e outras integrações. Automatize atendimento com IA, gerencie no CRM Kanban, dispare campanhas e execute workflows visuais.",
     url: "https://clerky.com.br",
     siteName: "Clerky",
     images: [
@@ -55,7 +66,7 @@ export const metadata: Metadata = {
         url: "/og-image.svg",
         width: 1200,
         height: 630,
-        alt: "Clerky - Hub de Integração WhatsApp",
+        alt: "Clerky - Plataforma de Automação e Gestão de Comunicação Multicanal",
       },
     ],
     locale: "pt_BR",
@@ -63,9 +74,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Clerky - Hub de Integração WhatsApp com IA",
+    title: "Clerky - Plataforma de Automação e Gestão de Comunicação Multicanal",
     description:
-      "Conecte seu WhatsApp a qualquer sistema via API ou Webhook. Crie agentes de IA sem código.",
+      "Centralize WhatsApp, Instagram e outras integrações. Automatize atendimento com IA, CRM Kanban e workflows visuais.",
     images: ["/og-image.svg"],
     creator: "@clerky_ia",
   },
@@ -98,7 +109,7 @@ export default function RootLayout({
     url: "https://clerky.com.br",
     logo: "https://clerky.com.br/img/logo3.png",
     description:
-      "Hub de Integração WhatsApp com IA, API e Webhook. CRM Kanban e Disparo em Massa.",
+      "Plataforma de automação e gestão de comunicação multicanal. Centraliza WhatsApp, Instagram e outras integrações. CRM Kanban, agentes de IA, workflows visuais e apps móveis.",
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "Customer Service",
@@ -113,9 +124,9 @@ export default function RootLayout({
   const productSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
-    name: "Clerky Hub de Integração",
+    name: "Clerky",
     description:
-      "Plataforma de integração WhatsApp com IA, permitindo criar agentes inteligentes, CRM Kanban e disparo em massa sem código.",
+      "Plataforma de automação e gestão de comunicação multicanal que centraliza WhatsApp, Instagram e outras integrações. Inclui agentes de IA, CRM Kanban, workflows visuais (MindClerky), disparo em massa, gerenciamento de grupos e apps móveis nativos.",
     brand: {
       "@type": "Brand",
       name: "Clerky",
@@ -131,7 +142,7 @@ export default function RootLayout({
     <html lang="pt-BR" className={`${inter.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
       <head>
         {/* Favicon */}
-        <link rel="icon" href="/img copy/favicon.png" type="image/png" />
+        <link rel="icon" href="/img/favicon.png" type="image/png" />
         
         {/* Schema.org JSON-LD */}
         <script
