@@ -36,7 +36,7 @@ const fakeNewsletterData: NewsletterItem[] = [
     description: "Agora você pode criar agentes ainda mais inteligentes com a integração do GPT-4 Turbo. Melhore a qualidade das respostas e reduza custos em até 30%.",
     fullContent: "Conteúdo completo da novidade sobre GPT-4 Turbo...",
     imageUrl: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=400&fit=crop",
-    publishedAt: "2025-01-15T10:00:00Z",
+    publishedAt: "2026-01-15T10:00:00Z",
     isActive: true,
     priority: 10,
     tags: ["IA", "GPT-4", "Novidade"]
@@ -45,11 +45,11 @@ const fakeNewsletterData: NewsletterItem[] = [
     id: "2",
     type: "promotion",
     title: "Black Friday: 50% OFF no Plano Pro",
-    description: "Aproveite nosso maior desconto do ano! Assine o plano Pro com 50% de desconto nos primeiros 6 meses. Válido até 30/01/2025.",
+    description: "Aproveite nosso maior desconto do ano! Assine o plano Pro com 50% de desconto nos primeiros 6 meses. Válido até 30/01/2026.",
     fullContent: "Detalhes completos da promoção Black Friday...",
     imageUrl: "https://images.unsplash.com/photo-1607082349566-187342175e2f?w=800&h=400&fit=crop",
-    publishedAt: "2025-01-10T08:00:00Z",
-    expiresAt: "2025-01-30T23:59:59Z",
+    publishedAt: "2026-01-10T08:00:00Z",
+    expiresAt: "2026-01-30T23:59:59Z",
     isActive: true,
     priority: 9,
     tags: ["Promoção", "Desconto", "Plano Pro"]
@@ -85,7 +85,7 @@ const fakeNewsletterData: NewsletterItem[] = [
 
 Crie workflows complexos sem código e automatize completamente suas conversas no WhatsApp!`,
     imageUrl: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&h=400&fit=crop",
-    publishedAt: "2025-01-16T10:00:00Z",
+    publishedAt: "2026-01-16T10:00:00Z",
     isActive: true,
     priority: 10,
     tags: ["Workflow", "Automação", "MindClerky"]
@@ -97,7 +97,7 @@ Crie workflows complexos sem código e automatize completamente suas conversas n
     description: "Acompanhe o desempenho dos seus agentes, campanhas e conversas com nosso novo dashboard de analytics em tempo real.",
     fullContent: "Conteúdo sobre o novo dashboard...",
     imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=400&fit=crop",
-    publishedAt: "2025-01-14T11:00:00Z",
+    publishedAt: "2026-01-14T11:00:00Z",
     isActive: true,
     priority: 8,
     tags: ["Dashboard", "Analytics", "Métricas"]
@@ -108,8 +108,8 @@ Crie workflows complexos sem código e automatize completamente suas conversas n
     title: "Plano Starter: Primeiro mês por apenas R$ 29",
     description: "Teste o Clerky sem compromisso! Primeiro mês do plano Starter por apenas R$ 29. Sem fidelidade, cancele quando quiser.",
     fullContent: "Detalhes da promoção do plano Starter...",
-    publishedAt: "2025-01-05T10:00:00Z",
-    expiresAt: "2025-02-05T23:59:59Z",
+    publishedAt: "2026-01-05T10:00:00Z",
+    expiresAt: "2026-02-05T23:59:59Z",
     isActive: true,
     priority: 6,
     tags: ["Promoção", "Starter", "Oferta"]
@@ -121,7 +121,7 @@ Crie workflows complexos sem código e automatize completamente suas conversas n
     description: "Nossa API foi completamente reformulada! Novos endpoints, melhor documentação, rate limits mais generosos e suporte a webhooks avançados.",
     fullContent: "Conteúdo sobre a nova versão da API...",
     imageUrl: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=400&fit=crop",
-    publishedAt: "2025-01-11T16:00:00Z",
+    publishedAt: "2026-01-11T16:00:00Z",
     isActive: true,
     priority: 9,
     tags: ["API", "Desenvolvimento", "Webhooks"]
@@ -132,7 +132,7 @@ Crie workflows complexos sem código e automatize completamente suas conversas n
     title: "Suporte a múltiplos idiomas nos agentes",
     description: "Agora seus agentes podem conversar em português, inglês, espanhol e mais 10 idiomas. Configure o idioma por agente ou deixe detectar automaticamente.",
     fullContent: "Conteúdo sobre suporte multilíngue...",
-    publishedAt: "2025-01-09T13:00:00Z",
+    publishedAt: "2026-01-09T13:00:00Z",
     isActive: true,
     priority: 7,
     tags: ["Idiomas", "Internacionalização", "Agentes"]
@@ -143,8 +143,8 @@ Crie workflows complexos sem código e automatize completamente suas conversas n
     title: "Webinar gratuito: Como aumentar vendas com WhatsApp",
     description: "Participe do nosso webinar gratuito e aprenda estratégias comprovadas para aumentar suas vendas usando WhatsApp e IA. Certificado incluso!",
     fullContent: "Detalhes do webinar...",
-    publishedAt: "2025-01-07T12:00:00Z",
-    expiresAt: "2025-01-25T23:59:59Z",
+    publishedAt: "2026-01-07T12:00:00Z",
+    expiresAt: "2026-01-25T23:59:59Z",
     isActive: true,
     priority: 8,
     tags: ["Webinar", "Educação", "Vendas"]
@@ -156,7 +156,7 @@ Crie workflows complexos sem código e automatize completamente suas conversas n
     description: "Melhorias significativas no CRM Kanban: drag and drop mais fluido, filtros avançados, busca inteligente e visualizações personalizadas.",
     fullContent: "Conteúdo sobre melhorias no CRM...",
     imageUrl: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=800&h=400&fit=crop",
-    publishedAt: "2025-01-13T15:00:00Z",
+    publishedAt: "2026-01-13T15:00:00Z",
     isActive: true,
     priority: 7,
     tags: ["CRM", "Kanban", "Melhorias"]
@@ -167,7 +167,7 @@ Crie workflows complexos sem código e automatize completamente suas conversas n
     title: "Integração com Google Sheets e Excel",
     description: "Sincronize seus contatos e dados diretamente com Google Sheets e Excel. Exporte relatórios automaticamente e mantenha tudo organizado.",
     fullContent: "Conteúdo sobre integração com planilhas...",
-    publishedAt: "2025-01-06T10:00:00Z",
+    publishedAt: "2026-01-06T10:00:00Z",
     isActive: true,
     priority: 6,
     tags: ["Integração", "Planilhas", "Automação"]
@@ -176,10 +176,10 @@ Crie workflows complexos sem código e automatize completamente suas conversas n
     id: "12",
     type: "promotion",
     title: "Freelancers: 40% OFF no plano Business",
-    description: "Oferta especial para freelancers e profissionais autônomos. Ganhe 40% de desconto no plano Business. Use o cupom: FREELANCER2025",
+    description: "Oferta especial para freelancers e profissionais autônomos. Ganhe 40% de desconto no plano Business. Use o cupom: FREELANCER2026",
     fullContent: "Detalhes da promoção para freelancers...",
-    publishedAt: "2025-01-04T09:00:00Z",
-    expiresAt: "2025-02-28T23:59:59Z",
+    publishedAt: "2026-01-04T09:00:00Z",
+    expiresAt: "2026-02-28T23:59:59Z",
     isActive: true,
     priority: 5,
     tags: ["Promoção", "Freelancers", "Business"]

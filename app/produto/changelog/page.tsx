@@ -16,7 +16,7 @@ export default function ChangelogPage() {
         <div className="space-y-8">
           <div className="border-l-4 border-primary pl-4">
             <h3 className="text-xl font-bold text-text-headline">
-              Versão 1.0.0 - Janeiro 2025
+              Versão 1.0.0 - Janeiro 2026
             </h3>
             <p className="text-sm text-text-body">Lançamento inicial</p>
             <ul className="mt-4 list-disc space-y-2 pl-6 text-text-body">

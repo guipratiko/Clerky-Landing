@@ -14,7 +14,7 @@ export default function PrivacidadeUsuarioPage() {
     >
       <div className="prose prose-lg max-w-none">
         <p className="text-text-body">
-          <strong>Última atualização:</strong> Janeiro de 2025
+          <strong>Última atualização:</strong> Janeiro de 2026
         </p>
 
         <h2 className="mt-8 text-2xl font-bold text-text-headline">

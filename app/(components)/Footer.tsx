@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 export function Footer() {
-  const currentYear = 2025;
+  const currentYear = 2026;
 
   const footerSections = [
     {

@@ -99,7 +99,7 @@ export function MassBlast() {
             <GlassCard className="p-8">
               <div className="mb-6">
                 <h3 className="mb-2 text-xl font-semibold text-text-headline">
-                  Campanha: Black Friday 2025
+                  Campanha: Black Friday 2026
                 </h3>
                 <p className="text-text-body">
                   Enviado para lista segmentada: Clientes ativos - São Paulo

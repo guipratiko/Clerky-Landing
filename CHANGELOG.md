@@ -1,6 +1,6 @@
 # Changelog - Landing Page Clerky
 
-## [1.0.0] - 2025-10-21
+## [1.0.0] - 2026-10-21
 
 ### ✨ Criação Inicial
 

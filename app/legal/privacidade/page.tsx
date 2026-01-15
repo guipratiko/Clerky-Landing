@@ -14,7 +14,7 @@ export default function PrivacidadePage() {
     >
       <div className="prose prose-lg max-w-none">
         <p className="text-text-body">
-          Última atualização: Janeiro de 2025
+          Última atualização: Janeiro de 2026
         </p>
 
         <h2 className="mt-8 text-2xl font-bold text-text-headline">

@@ -28,7 +28,7 @@ export function APIWebhook() {
       language: "json",
       code: `{
   "event": "message.received",
-  "timestamp": "2025-01-15T10:30:00Z",
+  "timestamp": "2026-01-15T10:30:00Z",
   "data": {
     "messageId": "msg_abc123xyz",
     "from": "5562987654321",
@@ -46,7 +46,7 @@ export function APIWebhook() {
   "success": true,
   "messageId": "msg_abc123xyz",
   "status": "sent",
-  "timestamp": "2025-01-15T10:30:01Z",
+  "timestamp": "2026-01-15T10:30:01Z",
   "queuePosition": null
 }`,
     },

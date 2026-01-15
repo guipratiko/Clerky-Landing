@@ -14,7 +14,7 @@ export default function PoliticaPrivacidadePage() {
     >
       <div className="prose prose-lg max-w-none">
         <p className="text-text-body">
-          <strong>Última atualização:</strong> 28 de Novembro de 2025
+          <strong>Última atualização:</strong> 28 de Novembro de 2026
         </p>
 
         <p className="mt-4 text-text-body">
