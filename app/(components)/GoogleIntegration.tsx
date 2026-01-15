@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Shield, FileSpreadsheet, FolderOpen, Lock, MessageSquare, Bot, Brain, Users } from "lucide-react";
+import { Shield, FileSpreadsheet, Lock, MessageSquare, Bot, Brain, Users } from "lucide-react";
 import { GlassCard } from "./ui/GlassCard";
 import Link from "next/link";
 

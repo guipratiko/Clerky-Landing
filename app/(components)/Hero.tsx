@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ChevronDown, Zap, Webhook, Kanban, Send, Instagram, Workflow, Smartphone } from "lucide-react";
+import { ChevronDown, Zap, Kanban, Send, Instagram, Workflow, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Particles } from "./ui/Particles";

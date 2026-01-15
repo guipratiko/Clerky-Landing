@@ -20,16 +20,12 @@ interface StatusData {
   timestamp: string;
   services: {
     backend?: ServiceStatus;
+    frontend?: ServiceStatus;
     dispatchClerky?: ServiceStatus;
     mindClerky?: ServiceStatus;
     instaClerky?: ServiceStatus;
     grupoClerky?: ServiceStatus;
   };
-}
-
-interface StatusResponse {
-  status: string;
-  data: StatusData;
 }
 
 export default function StatusPage() {
@@ -38,27 +34,61 @@ export default function StatusPage() {
   const [error, setError] = useState<string | null>(null);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [debugData, setDebugData] = useState<unknown>(null);
 
   const fetchStatus = async (showRefreshing = false) => {
     try {
       if (showRefreshing) setIsRefreshing(true);
       setError(null);
       
-      const response = await fetch("https://back.clerky.com.br/api/public/status");
+      const response = await fetch("https://back.clerky.com.br/api/public/status", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       
       if (!response.ok) {
-        throw new Error("Erro ao buscar status");
+        throw new Error(`Erro HTTP: ${response.status} - ${response.statusText}`);
       }
       
-      const data: StatusResponse[] = await response.json();
+      const data = await response.json();
       
-      if (data && data.length > 0 && data[0].data) {
-        setStatusData(data[0].data);
+      // Tratar diferentes formatos de resposta
+      let statusDataToSet: StatusData | null = null;
+      
+      // Se for um array
+      if (Array.isArray(data) && data.length > 0) {
+        const firstItem = data[0];
+        if (firstItem?.data) {
+          statusDataToSet = firstItem.data;
+        } else if (firstItem?.status === "success" && firstItem?.data) {
+          statusDataToSet = firstItem.data;
+        }
+      } 
+      // Se for um objeto direto
+      else if (data && typeof data === "object") {
+        if (data.data) {
+          statusDataToSet = data.data;
+        } else if (data.status === "success" && data.data) {
+          statusDataToSet = data.data;
+        } else if (data.services) {
+          // Se já vier no formato direto
+          statusDataToSet = data as StatusData;
+        }
+      }
+      
+      if (statusDataToSet && statusDataToSet.services) {
+        setStatusData(statusDataToSet);
         setLastUpdate(new Date());
+        setDebugData(null);
       } else {
-        throw new Error("Formato de dados inválido");
+        console.error("Formato de dados inválido:", data);
+        setDebugData(data);
+        throw new Error("Formato de dados inválido. Verifique os detalhes abaixo.");
       }
     } catch (err) {
+      console.error("Erro ao buscar status:", err);
       setError(err instanceof Error ? err.message : "Erro desconhecido");
       setStatusData(null);
     } finally {
@@ -153,6 +183,7 @@ export default function StatusPage() {
   const allServices = statusData?.services
     ? [
         statusData.services.backend,
+        statusData.services.frontend,
         statusData.services.dispatchClerky,
         statusData.services.mindClerky,
         statusData.services.instaClerky,
@@ -230,6 +261,16 @@ export default function StatusPage() {
             className="rounded-lg border-2 border-red-500 bg-red-500/10 p-6"
           >
             <p className="font-semibold text-red-500">Erro: {error}</p>
+            {debugData !== null && (
+              <div className="mt-4 rounded-lg bg-base-100 p-4">
+                <p className="mb-2 text-sm font-semibold text-text-headline">
+                  Dados recebidos (debug):
+                </p>
+                <pre className="max-h-64 overflow-auto rounded bg-base-50 p-3 text-xs text-text-body">
+                  {typeof debugData === 'object' ? JSON.stringify(debugData, null, 2) : String(debugData)}
+                </pre>
+              </div>
+            )}
             <Button
               variant="outline"
               onClick={() => fetchStatus(true)}

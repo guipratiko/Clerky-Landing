@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Bot, Plug, Kanban, Send, FileText, Instagram, Workflow, Users, Smartphone, MessageSquare } from "lucide-react";
+import { Bot, Plug, Kanban, Send, FileText, Instagram, Workflow, Users, Smartphone } from "lucide-react";
 import { GlassCard } from "./ui/GlassCard";
 
 export function Features() {
