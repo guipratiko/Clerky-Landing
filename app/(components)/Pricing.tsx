@@ -2,12 +2,53 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Check, Zap } from "lucide-react";
+import { useState } from "react";
+import { Check, Zap, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "./ui/GlassCard";
 import { gtag_report_conversion } from "@/lib/google-ads";
 
 export function Pricing() {
+  const [loadingCheckout, setLoadingCheckout] = useState(false);
+
+  const handleProCheckout = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    
+    if (loadingCheckout) return;
+    
+    setLoadingCheckout(true);
+    
+    try {
+      // Rastrear conversão
+      gtag_report_conversion('', 197.0, 'BRL');
+      
+      // Criar checkout no Asaas
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error('Erro ao criar checkout');
+      }
+      
+      const data = await response.json();
+      
+      if (data.link) {
+        // Redirecionar para o checkout
+        window.location.href = data.link;
+      } else {
+        throw new Error('Link de checkout não encontrado');
+      }
+    } catch (error) {
+      console.error('Erro ao processar checkout:', error);
+      alert('Erro ao processar checkout. Por favor, tente novamente.');
+      setLoadingCheckout(false);
+    }
+  };
+
   // TODO: Substituir por dados reais de preços
   const plans = [
     {
@@ -182,25 +223,33 @@ export function Pricing() {
                   </ul>
 
                   {/* CTA */}
-                  <Button
-                    asChild
-                    className={`w-full ${plan.highlighted ? "glow-primary" : ""}`}
-                    variant={plan.highlighted ? "default" : "outline"}
-                  >
-                    <Link 
-                      href={plan.href}
-                      onClick={(e) => {
-                        // Rastrear conversão para plano Pro e redirecionar após envio
-                        if (plan.highlighted) {
-                          e.preventDefault();
-                          gtag_report_conversion(plan.href, 197.0, 'BRL');
-                        }
-                        // Para outros planos, deixar navegação normal
-                      }}
+                  {plan.highlighted ? (
+                    <Button
+                      className="w-full glow-primary"
+                      variant="default"
+                      onClick={handleProCheckout}
+                      disabled={loadingCheckout}
                     >
-                      {plan.cta}
-                    </Link>
-                  </Button>
+                      {loadingCheckout ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Processando...
+                        </>
+                      ) : (
+                        plan.cta
+                      )}
+                    </Button>
+                  ) : (
+                    <Button
+                      asChild
+                      className="w-full"
+                      variant="outline"
+                    >
+                      <Link href={plan.href}>
+                        {plan.cta}
+                      </Link>
+                    </Button>
+                  )}
                 </div>
               </GlassCard>
             </motion.div>

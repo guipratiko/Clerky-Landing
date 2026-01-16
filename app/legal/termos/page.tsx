@@ -70,11 +70,11 @@ export default function TermosPage() {
           <div>
             <p className="font-semibold text-text-headline">Para iOS:</p>
             <ol className="mt-2 list-decimal space-y-2 pl-6 text-text-body">
-              <li>Abra <strong>Ajustes</strong> no seu dispositivo Apple</li>
-              <li>Toque em <strong>Apple ID</strong> &gt; <strong>Assinaturas</strong></li>
-              <li>Selecione <strong>Clerky PRO</strong></li>
-              <li>Toque em <strong>Cancelar Assinatura</strong></li>
-            </ol>
+          <li>Abra <strong>Ajustes</strong> no seu dispositivo Apple</li>
+          <li>Toque em <strong>Apple ID</strong> &gt; <strong>Assinaturas</strong></li>
+          <li>Selecione <strong>Clerky PRO</strong></li>
+          <li>Toque em <strong>Cancelar Assinatura</strong></li>
+        </ol>
           </div>
           <div>
             <p className="font-semibold text-text-headline">Para Android:</p>

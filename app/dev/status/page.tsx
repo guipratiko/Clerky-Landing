@@ -225,8 +225,8 @@ export default function StatusPage() {
                   <p className="text-red-500">Erro ao carregar status</p>
                 ) : allOnline ? (
                   <p className="text-lg font-semibold text-success">
-                    ✓ Todos os sistemas operacionais
-                  </p>
+            ✓ Todos os sistemas operacionais
+          </p>
                 ) : (
                   <p className="text-lg font-semibold text-red-500">
                     ⚠ Alguns sistemas estão offline
@@ -298,7 +298,7 @@ export default function StatusPage() {
             <div className="grid gap-4 md:grid-cols-2">
               {allServices.map((service) => getServiceStatus(service))}
             </div>
-          </div>
+        </div>
         )}
 
         {/* Informação adicional */}
@@ -313,7 +313,7 @@ export default function StatusPage() {
               <strong>Nota:</strong> Esta página atualiza automaticamente a cada
               30 segundos. Os tempos de resposta são medidos em milissegundos
               (ms).
-            </p>
+        </p>
           </motion.div>
         )}
       </div>
