@@ -1,12 +1,22 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 // Configurar timeout máximo de 30 segundos para esta rota
 export const maxDuration = 30;
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   const startTime = Date.now();
   const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   
+  // Log detalhado da requisição recebida
+  const clientIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+  const userAgent = request.headers.get('user-agent') || 'unknown';
+  
+  console.log(`[${new Date().toISOString()}] [${requestId}] ========================================`);
+  console.log(`[${new Date().toISOString()}] [${requestId}] 📥 REQUISIÇÃO RECEBIDA`);
+  console.log(`[${new Date().toISOString()}] [${requestId}] IP: ${clientIp}`);
+  console.log(`[${new Date().toISOString()}] [${requestId}] User-Agent: ${userAgent}`);
+  console.log(`[${new Date().toISOString()}] [${requestId}] URL: ${request.url}`);
+  console.log(`[${new Date().toISOString()}] [${requestId}] Method: ${request.method}`);
   console.log(`[${new Date().toISOString()}] [${requestId}] Iniciando criação de checkout`);
   
   try {
@@ -75,17 +85,33 @@ export async function POST() {
         console.error(`[${new Date().toISOString()}] [${requestId}] ❌ Erro ao criar checkout (${response.status}):`, errorData);
         const totalDuration = Date.now() - startTime;
         console.log(`[${new Date().toISOString()}] [${requestId}] Tempo total: ${totalDuration}ms`);
-        return NextResponse.json(
+        console.log(`[${new Date().toISOString()}] [${requestId}] ========================================`);
+        
+        const errorResponse = NextResponse.json(
           { error: 'Erro ao criar checkout', details: errorData },
           { status: response.status }
         );
+        errorResponse.headers.set('X-Request-ID', requestId);
+        return errorResponse;
       }
 
       const data = await response.json();
       const totalDuration = Date.now() - startTime;
       console.log(`[${new Date().toISOString()}] [${requestId}] ✅ Checkout criado com sucesso! ID: ${data.id || 'N/A'}, Link: ${data.link || 'N/A'}`);
       console.log(`[${new Date().toISOString()}] [${requestId}] Tempo total: ${totalDuration}ms`);
-      return NextResponse.json(data);
+      console.log(`[${new Date().toISOString()}] [${requestId}] 📤 Enviando resposta ao cliente...`);
+      
+      const nextResponse = NextResponse.json(data);
+      // Adicionar headers CORS e cache
+      nextResponse.headers.set('Access-Control-Allow-Origin', '*');
+      nextResponse.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+      nextResponse.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+      nextResponse.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+      nextResponse.headers.set('X-Request-ID', requestId);
+      
+      console.log(`[${new Date().toISOString()}] [${requestId}] ✅ Resposta enviada com sucesso`);
+      console.log(`[${new Date().toISOString()}] [${requestId}] ========================================`);
+      return nextResponse;
     } finally {
       clearTimeout(timeoutId);
     }
@@ -98,23 +124,44 @@ export async function POST() {
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
         console.log(`[${new Date().toISOString()}] [${requestId}] ⏱️ Erro de timeout detectado`);
-        return NextResponse.json(
+        console.log(`[${new Date().toISOString()}] [${requestId}] ========================================`);
+        const timeoutResponse = NextResponse.json(
           { error: 'Timeout: A requisição demorou muito para responder. Por favor, tente novamente.' },
           { status: 504 }
         );
+        timeoutResponse.headers.set('X-Request-ID', requestId);
+        return timeoutResponse;
       }
       
       console.error(`[${new Date().toISOString()}] [${requestId}] Erro: ${error.message}`);
-      return NextResponse.json(
+      console.log(`[${new Date().toISOString()}] [${requestId}] ========================================`);
+      const errorResponse = NextResponse.json(
         { error: `Erro ao processar checkout: ${error.message}` },
         { status: 500 }
       );
+      errorResponse.headers.set('X-Request-ID', requestId);
+      return errorResponse;
     }
     
     console.error(`[${new Date().toISOString()}] [${requestId}] Erro desconhecido`);
-    return NextResponse.json(
+    console.log(`[${new Date().toISOString()}] [${requestId}] ========================================`);
+    const unknownErrorResponse = NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }
     );
+    unknownErrorResponse.headers.set('X-Request-ID', requestId);
+    return unknownErrorResponse;
   }
+}
+
+// Adicionar handler OPTIONS para CORS
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  });
 }

@@ -46,11 +46,13 @@ export function Pricing() {
           controller.abort();
         }, 30000); // 30 segundos
         
-        console.log(`[${new Date().toISOString()}] [${requestId}] 📤 Enviando requisição para /api/checkout`);
+        const apiUrl = '/api/checkout';
+        console.log(`[${new Date().toISOString()}] [${requestId}] 📤 Enviando requisição para ${apiUrl}`);
+        console.log(`[${new Date().toISOString()}] [${requestId}] URL completa: ${window.location.origin}${apiUrl}`);
         const fetchStartTime = Date.now();
         
         try {
-          const response = await fetch('/api/checkout', {
+          const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -61,6 +63,10 @@ export function Pricing() {
           clearTimeout(timeoutId);
           const fetchDuration = Date.now() - fetchStartTime;
           console.log(`[${new Date().toISOString()}] [${requestId}] 📥 Resposta recebida em ${fetchDuration}ms - Status: ${response.status} ${response.statusText}`);
+          console.log(`[${new Date().toISOString()}] [${requestId}] Headers da resposta:`, {
+            'x-request-id': response.headers.get('x-request-id'),
+            'content-type': response.headers.get('content-type'),
+          });
           
           if (!response.ok) {
             // Se for erro 502, 503 ou 504, tentar novamente
@@ -93,8 +99,15 @@ export function Pricing() {
           clearTimeout(timeoutId);
           const fetchDuration = Date.now() - fetchStartTime;
           
+          console.error(`[${new Date().toISOString()}] [${requestId}] ❌ Erro na requisição fetch (${fetchDuration}ms):`, {
+            name: fetchError instanceof Error ? fetchError.name : 'Unknown',
+            message: fetchError instanceof Error ? fetchError.message : String(fetchError),
+            stack: fetchError instanceof Error ? fetchError.stack : undefined,
+          });
+          
           if (fetchError instanceof Error && fetchError.name === 'AbortError') {
             console.log(`[${new Date().toISOString()}] [${requestId}] ⏱️ Timeout após ${fetchDuration}ms`);
+            console.log(`[${new Date().toISOString()}] [${requestId}] Possíveis causas: servidor não respondeu, proxy timeout, ou problema de rede`);
             // Timeout - tentar novamente se ainda houver tentativas
             if (attempt < maxRetries) {
               const waitTime = 1000 * (attempt + 1);
@@ -104,6 +117,12 @@ export function Pricing() {
             }
             throw new Error('A requisição demorou muito. Por favor, tente novamente.');
           }
+          
+          // Verificar se é erro de rede
+          if (fetchError instanceof TypeError && fetchError.message.includes('fetch')) {
+            console.error(`[${new Date().toISOString()}] [${requestId}] Erro de rede detectado:`, fetchError.message);
+          }
+          
           throw fetchError;
         }
       } catch (error) {
