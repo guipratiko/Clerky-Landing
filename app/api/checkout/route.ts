@@ -1,6 +1,14 @@
 import { NextResponse } from "next/server";
 
+// Configurar timeout máximo de 30 segundos para esta rota
+export const maxDuration = 30;
+
 export async function POST() {
+  const startTime = Date.now();
+  const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  
+  console.log(`[${new Date().toISOString()}] [${requestId}] Iniciando criação de checkout`);
+  
   try {
     const accessToken = process.env.ASAAS_ACCESS_TOKEN || '$aact_hmlg_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6OjMwNGQzNjc2LWExNzYtNDA2ZS04M2FjLWVhNmQzODg2NjBkYzo6JGFhY2hfYjUxMGM0ZDUtOTMwMS00MmZlLTlkMzctMDk3MDhhZmUzMzE0';
     
@@ -8,17 +16,31 @@ export async function POST() {
     const nextDueDate = new Date();
     nextDueDate.setMonth(nextDueDate.getMonth() + 1);
     const nextDueDateString = nextDueDate.toISOString().split('T')[0];
+    console.log(`[${new Date().toISOString()}] [${requestId}] Próxima data de vencimento: ${nextDueDateString}`);
 
     const apiUrl = process.env.ASAAS_API_URL || 'https://api-sandbox.asaas.com/v3/checkouts';
+    console.log(`[${new Date().toISOString()}] [${requestId}] URL da API Asaas: ${apiUrl}`);
     
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'accept': 'application/json',
-        'content-type': 'application/json',
-        'access_token': accessToken,
-      },
-      body: JSON.stringify({
+    // Criar AbortController para timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      console.log(`[${new Date().toISOString()}] [${requestId}] ⚠️ TIMEOUT: Requisição demorou mais de 30 segundos`);
+      controller.abort();
+    }, 30000); // 30 segundos
+    
+    console.log(`[${new Date().toISOString()}] [${requestId}] Enviando requisição para Asaas...`);
+    const fetchStartTime = Date.now();
+    
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'content-type': 'application/json',
+          'access_token': accessToken,
+        },
+        signal: controller.signal,
+        body: JSON.stringify({
         billingTypes: ['CREDIT_CARD'],
         chargeTypes: ['RECURRENT'],
         callback: {
@@ -42,21 +64,54 @@ export async function POST() {
           nextDueDate: nextDueDateString,
         },
       }),
-    });
+      });
+      
+      clearTimeout(timeoutId);
+      const fetchDuration = Date.now() - fetchStartTime;
+      console.log(`[${new Date().toISOString()}] [${requestId}] ✅ Resposta recebida em ${fetchDuration}ms - Status: ${response.status} ${response.statusText}`);
 
-    if (!response.ok) {
-      const errorData = await response.text();
-      console.error('Erro ao criar checkout:', errorData);
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error(`[${new Date().toISOString()}] [${requestId}] ❌ Erro ao criar checkout (${response.status}):`, errorData);
+        const totalDuration = Date.now() - startTime;
+        console.log(`[${new Date().toISOString()}] [${requestId}] Tempo total: ${totalDuration}ms`);
+        return NextResponse.json(
+          { error: 'Erro ao criar checkout', details: errorData },
+          { status: response.status }
+        );
+      }
+
+      const data = await response.json();
+      const totalDuration = Date.now() - startTime;
+      console.log(`[${new Date().toISOString()}] [${requestId}] ✅ Checkout criado com sucesso! ID: ${data.id || 'N/A'}, Link: ${data.link || 'N/A'}`);
+      console.log(`[${new Date().toISOString()}] [${requestId}] Tempo total: ${totalDuration}ms`);
+      return NextResponse.json(data);
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  } catch (error) {
+    const totalDuration = Date.now() - startTime;
+    console.error(`[${new Date().toISOString()}] [${requestId}] ❌ Erro na API de checkout:`, error);
+    console.error(`[${new Date().toISOString()}] [${requestId}] Stack trace:`, error instanceof Error ? error.stack : 'N/A');
+    console.log(`[${new Date().toISOString()}] [${requestId}] Tempo total antes do erro: ${totalDuration}ms`);
+    
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        console.log(`[${new Date().toISOString()}] [${requestId}] ⏱️ Erro de timeout detectado`);
+        return NextResponse.json(
+          { error: 'Timeout: A requisição demorou muito para responder. Por favor, tente novamente.' },
+          { status: 504 }
+        );
+      }
+      
+      console.error(`[${new Date().toISOString()}] [${requestId}] Erro: ${error.message}`);
       return NextResponse.json(
-        { error: 'Erro ao criar checkout', details: errorData },
-        { status: response.status }
+        { error: `Erro ao processar checkout: ${error.message}` },
+        { status: 500 }
       );
     }
-
-    const data = await response.json();
-    return NextResponse.json(data);
-  } catch (error) {
-    console.error('Erro na API de checkout:', error);
+    
+    console.error(`[${new Date().toISOString()}] [${requestId}] Erro desconhecido`);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

@@ -14,39 +14,128 @@ export function Pricing() {
   const handleProCheckout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     
-    if (loadingCheckout) return;
+    if (loadingCheckout) {
+      console.log('[FRONTEND] Checkout já em andamento, ignorando clique');
+      return;
+    }
+    
+    const requestId = `frontend_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const overallStartTime = Date.now();
+    console.log(`[${new Date().toISOString()}] [${requestId}] 🚀 Iniciando processo de checkout`);
     
     setLoadingCheckout(true);
     
-    try {
-      // Rastrear conversão
-      gtag_report_conversion('', 197.0, 'BRL');
+    const maxRetries = 2;
+    let lastError: Error | null = null;
+    
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      const attemptStartTime = Date.now();
+      console.log(`[${new Date().toISOString()}] [${requestId}] Tentativa ${attempt + 1}/${maxRetries + 1}`);
       
-      // Criar checkout no Asaas
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      if (!response.ok) {
-        throw new Error('Erro ao criar checkout');
+      try {
+        // Rastrear conversão apenas na primeira tentativa
+        if (attempt === 0) {
+          console.log(`[${new Date().toISOString()}] [${requestId}] 📊 Rastreando conversão no Google Ads`);
+          gtag_report_conversion('', 197.0, 'BRL');
+        }
+        
+        // Criar checkout no Asaas com timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => {
+          console.log(`[${new Date().toISOString()}] [${requestId}] ⏱️ TIMEOUT no frontend após 30 segundos`);
+          controller.abort();
+        }, 30000); // 30 segundos
+        
+        console.log(`[${new Date().toISOString()}] [${requestId}] 📤 Enviando requisição para /api/checkout`);
+        const fetchStartTime = Date.now();
+        
+        try {
+          const response = await fetch('/api/checkout', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            signal: controller.signal,
+          });
+          
+          clearTimeout(timeoutId);
+          const fetchDuration = Date.now() - fetchStartTime;
+          console.log(`[${new Date().toISOString()}] [${requestId}] 📥 Resposta recebida em ${fetchDuration}ms - Status: ${response.status} ${response.statusText}`);
+          
+          if (!response.ok) {
+            // Se for erro 502, 503 ou 504, tentar novamente
+            if ((response.status === 502 || response.status === 503 || response.status === 504) && attempt < maxRetries) {
+              const waitTime = 1000 * (attempt + 1);
+              console.log(`[${new Date().toISOString()}] [${requestId}] ⚠️ Erro ${response.status} detectado. Aguardando ${waitTime}ms antes de tentar novamente...`);
+              await new Promise(resolve => setTimeout(resolve, waitTime));
+              continue;
+            }
+            
+            const errorData = await response.json().catch(() => ({ error: 'Erro desconhecido' }));
+            console.error(`[${new Date().toISOString()}] [${requestId}] ❌ Erro HTTP ${response.status}:`, errorData);
+            throw new Error(errorData.error || `Erro HTTP: ${response.status}`);
+          }
+          
+          const data = await response.json();
+          const attemptDuration = Date.now() - attemptStartTime;
+          console.log(`[${new Date().toISOString()}] [${requestId}] ✅ Checkout criado com sucesso! ID: ${data.id || 'N/A'}`);
+          console.log(`[${new Date().toISOString()}] [${requestId}] Tempo da tentativa: ${attemptDuration}ms`);
+          
+          if (data.link) {
+            console.log(`[${new Date().toISOString()}] [${requestId}] 🔗 Redirecionando para: ${data.link}`);
+            // Redirecionar para o checkout
+            window.location.href = data.link;
+            return; // Sucesso, sair da função
+          } else {
+            throw new Error('Link de checkout não encontrado na resposta');
+          }
+        } catch (fetchError) {
+          clearTimeout(timeoutId);
+          const fetchDuration = Date.now() - fetchStartTime;
+          
+          if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+            console.log(`[${new Date().toISOString()}] [${requestId}] ⏱️ Timeout após ${fetchDuration}ms`);
+            // Timeout - tentar novamente se ainda houver tentativas
+            if (attempt < maxRetries) {
+              const waitTime = 1000 * (attempt + 1);
+              console.log(`[${new Date().toISOString()}] [${requestId}] Aguardando ${waitTime}ms antes de tentar novamente...`);
+              await new Promise(resolve => setTimeout(resolve, waitTime));
+              continue;
+            }
+            throw new Error('A requisição demorou muito. Por favor, tente novamente.');
+          }
+          throw fetchError;
+        }
+      } catch (error) {
+        const attemptDuration = Date.now() - attemptStartTime;
+        lastError = error instanceof Error ? error : new Error('Erro desconhecido');
+        console.error(`[${new Date().toISOString()}] [${requestId}] ❌ Erro na tentativa ${attempt + 1} (${attemptDuration}ms):`, lastError.message);
+        
+        // Se não for a última tentativa e for um erro que vale a pena tentar novamente
+        if (attempt < maxRetries && (
+          lastError.message.includes('timeout') ||
+          lastError.message.includes('502') ||
+          lastError.message.includes('503') ||
+          lastError.message.includes('504')
+        )) {
+          const waitTime = 1000 * (attempt + 1);
+          console.log(`[${new Date().toISOString()}] [${requestId}] ⏳ Aguardando ${waitTime}ms antes da próxima tentativa...`);
+          await new Promise(resolve => setTimeout(resolve, waitTime));
+          continue;
+        }
+        
+        // Se chegou aqui, é a última tentativa ou erro não recuperável
+        break;
       }
-      
-      const data = await response.json();
-      
-      if (data.link) {
-        // Redirecionar para o checkout
-        window.location.href = data.link;
-      } else {
-        throw new Error('Link de checkout não encontrado');
-      }
-    } catch (error) {
-      console.error('Erro ao processar checkout:', error);
-      alert('Erro ao processar checkout. Por favor, tente novamente.');
-      setLoadingCheckout(false);
     }
+    
+    // Se chegou aqui, todas as tentativas falharam
+    const totalDuration = Date.now() - overallStartTime;
+    console.error(`[${new Date().toISOString()}] [${requestId}] ❌ FALHA FINAL: Todas as tentativas falharam após ${totalDuration}ms`);
+    console.error(`[${new Date().toISOString()}] [${requestId}] Último erro:`, lastError);
+    const errorMessage = lastError?.message || 'Erro desconhecido ao processar checkout';
+    alert(`Erro: ${errorMessage}\n\nPor favor, tente novamente ou entre em contato conosco se o problema persistir.`);
+    setLoadingCheckout(false);
   };
 
   // TODO: Substituir por dados reais de preços
