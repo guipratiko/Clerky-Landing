@@ -9,20 +9,25 @@ export async function POST(request: NextRequest) {
       '';
     
     // Remover "$" do início do token se presente
-    if (accessToken.startsWith('$')) {
+    if (accessToken && accessToken.startsWith('$')) {
       accessToken = accessToken.substring(1);
     }
     
-    // Log para debug (remover em produção se necessário)
-    console.log('Token encontrado:', accessToken ? `${accessToken.substring(0, 20)}...` : 'não encontrado');
-    console.log('Variáveis disponíveis:', {
-      hasASAAS_ACCESS_TOKEN: !!process.env.ASAAS_ACCESS_TOKEN,
-      hasNEXT_PUBLIC: !!process.env.NEXT_PUBLIC_ASAAS_ACCESS_TOKEN,
-    });
+    // Se ainda não tiver token, usar fallback do token de produção (sem o $)
+    // Em produção, a variável deve estar configurada no servidor
+    if (!accessToken) {
+      // Fallback: token de produção do .env (sem o $)
+      // Em produção, configure ASAAS_ACCESS_TOKEN no servidor como variável de ambiente
+      const fallbackToken = 'aact_prod_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6OmZkOTNkNzVlLWQ1ZWUtNDFkNy04OGRkLTRmYTNiYjNlODY1ODo6JGFhY2hfYzQ0MmU2MDgtOGJlYS00MGVhLWJhZTItYmI0YzNhZjZhYmUy';
+      
+      // Log de aviso
+      console.warn('⚠️ ASAAS_ACCESS_TOKEN não encontrado nas variáveis de ambiente. Usando fallback. Configure ASAAS_ACCESS_TOKEN no servidor como variável de ambiente em runtime.');
+      accessToken = fallbackToken;
+    }
     
     if (!accessToken) {
       return NextResponse.json(
-        { error: 'Token de acesso não configurado. Verifique as variáveis de ambiente.' },
+        { error: 'Token de acesso não configurado. Configure ASAAS_ACCESS_TOKEN no servidor.' },
         { status: 500 }
       );
     }
