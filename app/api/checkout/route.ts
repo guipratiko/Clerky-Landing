@@ -117,9 +117,9 @@ export async function POST(request: NextRequest) {
 
       if (!response.ok) {
         const errorData = await response.text();
-        let parsedError: any = {};
+        let parsedError: Record<string, unknown> = {};
         try {
-          parsedError = JSON.parse(errorData);
+          parsedError = JSON.parse(errorData) as Record<string, unknown>;
         } catch {
           parsedError = { error: errorData };
         }

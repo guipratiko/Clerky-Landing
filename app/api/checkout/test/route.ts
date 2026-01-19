@@ -32,7 +32,7 @@ export async function GET() {
         },
         signal: controller.signal,
       });
-    } catch (headError) {
+    } catch {
       // Se HEAD falhar, tentar GET em um endpoint inexistente (404 confirma que a API está acessível)
       response = await fetch(`${apiUrl}/test-connection-${Date.now()}`, {
         method: 'GET',
