@@ -9,39 +9,46 @@ import { GlassCard } from "./ui/GlassCard";
 import { gtag_report_conversion } from "@/lib/google-ads";
 
 export function Pricing() {
-  const [isCreatingCheckout, setIsCreatingCheckout] = useState(false);
+  const [isLoadingPro, setIsLoadingPro] = useState(false);
+  const [proError, setProError] = useState<string | null>(null);
 
-  const createAsaasCheckout = async () => {
+  const handleProCheckout = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsLoadingPro(true);
+    setProError(null);
+
     try {
-      setIsCreatingCheckout(true);
-      
-      // Chamar API route do servidor (protege o token)
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
+      const response = await fetch("/api/checkout", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-        }
+          "Content-Type": "application/json",
+        },
       });
-      
-      const data = await response.json();
-      
+
       if (!response.ok) {
-        throw new Error(data.error || 'Erro ao criar checkout');
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Erro ao criar checkout");
       }
-      
-      if (data.link) {
-        // Rastrear conversão
-        gtag_report_conversion(data.link, 197.0, 'BRL');
-        
-        // Redirecionar para o checkout
-        window.location.href = data.link;
-      } else {
-        throw new Error('Link de checkout não retornado pela API');
+
+      const data = await response.json();
+
+      if (!data.link) {
+        throw new Error("Link de checkout não retornado");
       }
+
+      // Rastrear conversão
+      gtag_report_conversion(data.link, 197.0, "BRL");
+
+      // Redirecionar para o checkout
+      window.location.href = data.link;
     } catch (error) {
-      console.error('Erro ao criar checkout:', error);
-      alert(error instanceof Error ? error.message : 'Erro ao processar pagamento. Tente novamente.');
-      setIsCreatingCheckout(false);
+      console.error("Erro ao processar checkout:", error);
+      setProError(
+        error instanceof Error
+          ? error.message
+          : "Erro ao processar checkout. Tente novamente."
+      );
+      setIsLoadingPro(false);
     }
   };
 
@@ -79,7 +86,6 @@ export function Pricing() {
         "Analytics avançado",
       ],
       cta: "Assinar Pro",
-      href: "https://clerky.carrinho.app/one-checkout/ocmtb/30403256",
       highlighted: true,
       badge: "Mais popular",
     },
@@ -218,29 +224,46 @@ export function Pricing() {
                   </ul>
 
                   {/* CTA */}
-                  {plan.highlighted ? (
-                    <Button
-                      onClick={createAsaasCheckout}
-                      disabled={isCreatingCheckout}
-                      className="w-full glow-primary"
-                      variant="default"
-                    >
-                      {isCreatingCheckout ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Processando...
-                        </>
-                      ) : (
-                        plan.cta
+                  {plan.name === "Pro" ? (
+                    <div className="space-y-2">
+                      <Button
+                        onClick={handleProCheckout}
+                        disabled={isLoadingPro}
+                        className={`w-full ${plan.highlighted ? "glow-primary" : ""}`}
+                        variant={plan.highlighted ? "default" : "outline"}
+                      >
+                        {isLoadingPro ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Processando...
+                          </>
+                        ) : (
+                          plan.cta
+                        )}
+                      </Button>
+                      {proError && (
+                        <p className="text-xs text-red-500">{proError}</p>
                       )}
-                    </Button>
+                    </div>
                   ) : (
                     <Button
                       asChild
-                      className="w-full"
-                      variant="outline"
+                      className={`w-full ${plan.highlighted ? "glow-primary" : ""}`}
+                      variant={plan.highlighted ? "default" : "outline"}
                     >
-                      <Link href={plan.href}>
+                      <Link
+                        href={plan.href || "#"}
+                        onClick={(e) => {
+                          if (plan.name === "Trial") {
+                            e.preventDefault();
+                            gtag_report_conversion(
+                              plan.href || "",
+                              1.0,
+                              "BRL"
+                            );
+                          }
+                        }}
+                      >
                         {plan.cta}
                       </Link>
                     </Button>

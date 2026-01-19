@@ -165,7 +165,7 @@ export function Footer() {
         {/* Bottom Footer */}
         <div className="flex flex-col items-center justify-between gap-4 text-sm text-text-body lg:flex-row">
           <div className="flex flex-col items-center gap-1 lg:items-start">
-            <p>© {currentYear} Clerky. Todos os direitos reservados.</p>
+          <p>© {currentYear} Clerky. Todos os direitos reservados.</p>
             <p className="text-xs text-text-body/80">CNPJ: 64.494.403/0001-17</p>
           </div>
 
