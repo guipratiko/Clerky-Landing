@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// Configurar timeout máximo de 30 segundos para esta rota
-export const maxDuration = 30;
+// Configurar timeout máximo de 60 segundos para esta rota
+// Aumentado para dar mais tempo à API do Asaas responder
+export const maxDuration = 60;
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
@@ -45,11 +46,12 @@ export async function POST(request: NextRequest) {
       console.log(`[${new Date().toISOString()}] [${requestId}] URL da API Asaas: ${apiUrl}`);
       
       // Criar AbortController para timeout
+      // Usamos 55 segundos para dar margem ao maxDuration de 60s
       const controller = new AbortController();
       const timeoutId = setTimeout(() => {
-        console.log(`[${new Date().toISOString()}] [${requestId}] ⚠️ TIMEOUT: Requisição demorou mais de 30 segundos`);
+        console.log(`[${new Date().toISOString()}] [${requestId}] ⚠️ TIMEOUT: Requisição demorou mais de 55 segundos`);
         controller.abort();
-      }, 30000); // 30 segundos
+      }, 55000); // 55 segundos (margem para maxDuration de 60s)
       
       console.log(`[${new Date().toISOString()}] [${requestId}] Enviando requisição para Asaas...`);
       const fetchStartTime = Date.now();

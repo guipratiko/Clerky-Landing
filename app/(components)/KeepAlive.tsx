@@ -51,9 +51,14 @@ export function KeepAlive() {
         
         if (response.ok) {
           const data = await response.json();
-          console.log(`[KeepAlive] ✅ Teste de checkout: ${data.asaasApiReachable ? 'API acessível' : 'API inacessível'} - ${data.duration}`);
+          if (data.asaasApiReachable) {
+            console.log(`[KeepAlive] ✅ Teste de checkout: API acessível (Status ${data.responseStatus}) - ${data.duration}`);
+          } else {
+            console.warn(`[KeepAlive] ⚠️ Teste de checkout: API pode estar inacessível (Status ${data.responseStatus}) - ${data.duration}`);
+          }
         } else {
-          console.warn(`[KeepAlive] ⚠️ Teste de checkout falhou: ${response.status}`);
+          const errorData = await response.json().catch(() => ({ error: 'Erro desconhecido' }));
+          console.warn(`[KeepAlive] ⚠️ Teste de checkout falhou: ${response.status}`, errorData);
         }
       } catch (error) {
         console.error('[KeepAlive] ❌ Erro ao testar checkout:', error);

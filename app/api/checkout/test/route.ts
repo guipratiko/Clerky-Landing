@@ -20,26 +20,43 @@ export async function GET() {
       controller.abort();
     }, 8000); // 8 segundos para teste
     
-    // Fazer uma requisição simples para verificar conectividade
-    // Não vamos criar um checkout real, apenas testar a conexão
-    const response = await fetch(apiUrl, {
-      method: 'OPTIONS', // Usar OPTIONS para não criar nada
-      headers: {
-        'accept': 'application/json',
-        'access_token': accessToken,
-      },
-      signal: controller.signal,
-    });
+    // Fazer uma requisição HEAD para verificar conectividade sem criar nada
+    // Se HEAD não funcionar, tentamos GET em um endpoint que não deve existir (retornará 404, mas confirma conectividade)
+    let response;
+    try {
+      response = await fetch(apiUrl, {
+        method: 'HEAD',
+        headers: {
+          'accept': 'application/json',
+          'access_token': accessToken,
+        },
+        signal: controller.signal,
+      });
+    } catch (headError) {
+      // Se HEAD falhar, tentar GET em um endpoint inexistente (404 confirma que a API está acessível)
+      response = await fetch(`${apiUrl}/test-connection-${Date.now()}`, {
+        method: 'GET',
+        headers: {
+          'accept': 'application/json',
+          'access_token': accessToken,
+        },
+        signal: controller.signal,
+      });
+    }
     
     clearTimeout(timeoutId);
     const duration = Date.now() - startTime;
     
-    console.log(`[${new Date().toISOString()}] [${requestId}] ✅ Teste concluído em ${duration}ms - Status: ${response.status}`);
+    // Qualquer status < 500 significa que conseguimos conectar com a API
+    // 401, 404, etc. são OK - o importante é que a API respondeu
+    const isReachable = response.status < 500;
+    
+    console.log(`[${new Date().toISOString()}] [${requestId}] ✅ Teste concluído em ${duration}ms - Status: ${response.status} (Acessível: ${isReachable})`);
     
     return NextResponse.json(
       {
         status: 'ok',
-        asaasApiReachable: response.status < 500,
+        asaasApiReachable: isReachable,
         responseStatus: response.status,
         duration: `${duration}ms`,
         timestamp: new Date().toISOString(),

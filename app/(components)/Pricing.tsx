@@ -40,11 +40,12 @@ export function Pricing() {
         }
         
         // Criar checkout no Asaas com timeout
+        // Aumentamos para 50 segundos para dar mais tempo ao servidor (que tem maxDuration de 60s)
         const controller = new AbortController();
         const timeoutId = setTimeout(() => {
-          console.log(`[${new Date().toISOString()}] [${requestId}] ⏱️ TIMEOUT no frontend após 30 segundos`);
+          console.log(`[${new Date().toISOString()}] [${requestId}] ⏱️ TIMEOUT no frontend após 50 segundos`);
           controller.abort();
-        }, 30000); // 30 segundos
+        }, 50000); // 50 segundos (servidor tem 60s, mas damos margem para overhead de rede)
         
         const apiUrl = '/api/checkout';
         console.log(`[${new Date().toISOString()}] [${requestId}] 📤 Enviando requisição para ${apiUrl}`);
