@@ -2,17 +2,27 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    // Obter token do .env e remover "$" se presente
-    let accessToken = process.env.ASAAS_ACCESS_TOKEN || '';
+    // Obter token do .env - tentar múltiplas variáveis
+    let accessToken = 
+      process.env.ASAAS_ACCESS_TOKEN || 
+      process.env.NEXT_PUBLIC_ASAAS_ACCESS_TOKEN || 
+      '';
     
     // Remover "$" do início do token se presente
     if (accessToken.startsWith('$')) {
       accessToken = accessToken.substring(1);
     }
     
+    // Log para debug (remover em produção se necessário)
+    console.log('Token encontrado:', accessToken ? `${accessToken.substring(0, 20)}...` : 'não encontrado');
+    console.log('Variáveis disponíveis:', {
+      hasASAAS_ACCESS_TOKEN: !!process.env.ASAAS_ACCESS_TOKEN,
+      hasNEXT_PUBLIC: !!process.env.NEXT_PUBLIC_ASAAS_ACCESS_TOKEN,
+    });
+    
     if (!accessToken) {
       return NextResponse.json(
-        { error: 'Token de acesso não configurado' },
+        { error: 'Token de acesso não configurado. Verifique as variáveis de ambiente.' },
         { status: 500 }
       );
     }
