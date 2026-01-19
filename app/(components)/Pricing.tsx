@@ -70,6 +70,14 @@ export function Pricing() {
           });
           
           if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ error: 'Erro desconhecido' }));
+            
+            // Erro 401 (Unauthorized) - Token inválido, não tentar novamente
+            if (response.status === 401) {
+              console.error(`[${new Date().toISOString()}] [${requestId}] 🔐 ERRO DE AUTENTICAÇÃO: Token do Asaas inválido`);
+              throw new Error('Erro de configuração do gateway de pagamento. Por favor, entre em contato com o suporte.');
+            }
+            
             // Se for erro 502, 503 ou 504, tentar novamente
             if ((response.status === 502 || response.status === 503 || response.status === 504) && attempt < maxRetries) {
               const waitTime = 1000 * (attempt + 1);
@@ -78,7 +86,6 @@ export function Pricing() {
               continue;
             }
             
-            const errorData = await response.json().catch(() => ({ error: 'Erro desconhecido' }));
             console.error(`[${new Date().toISOString()}] [${requestId}] ❌ Erro HTTP ${response.status}:`, errorData);
             throw new Error(errorData.error || `Erro HTTP: ${response.status}`);
           }

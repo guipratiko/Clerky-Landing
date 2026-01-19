@@ -36,6 +36,26 @@ export async function POST(request: NextRequest) {
       
       const accessToken = process.env.ASAAS_ACCESS_TOKEN || '$aact_hmlg_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6OjMwNGQzNjc2LWExNzYtNDA2ZS04M2FjLWVhNmQzODg2NjBkYzo6JGFhY2hfYjUxMGM0ZDUtOTMwMS00MmZlLTlkMzctMDk3MDhhZmUzMzE0';
       
+      // Validar se o token está configurado (tokens do Asaas podem começar com $)
+      if (!accessToken || accessToken.trim().length < 10) {
+        console.error(`[${new Date().toISOString()}] [${requestId}] ❌ Token de acesso do Asaas não configurado ou muito curto`);
+        const errorResponse = NextResponse.json(
+          { error: 'Configuração do gateway de pagamento inválida. Por favor, entre em contato com o suporte.' },
+          { status: 500 }
+        );
+        errorResponse.headers.set('X-Request-ID', requestId);
+        errorResponse.headers.set('Access-Control-Allow-Origin', '*');
+        errorResponse.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+        errorResponse.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+        return errorResponse;
+      }
+      
+      // Log parcial do token para debug (sem expor o token completo)
+      const tokenPrefix = accessToken.substring(0, 15);
+      const tokenLength = accessToken.length;
+      const isFromEnv = !!process.env.ASAAS_ACCESS_TOKEN;
+      console.log(`[${new Date().toISOString()}] [${requestId}] Token de acesso: ${tokenPrefix}... (${tokenLength} caracteres, ${isFromEnv ? 'do .env' : 'fallback'})`);
+      
       // Calcular próxima data de vencimento (próximo mês)
       const nextDueDate = new Date();
       nextDueDate.setMonth(nextDueDate.getMonth() + 1);
@@ -97,7 +117,36 @@ export async function POST(request: NextRequest) {
 
       if (!response.ok) {
         const errorData = await response.text();
-        console.error(`[${new Date().toISOString()}] [${requestId}] ❌ Erro ao criar checkout (${response.status}):`, errorData);
+        let parsedError: any = {};
+        try {
+          parsedError = JSON.parse(errorData);
+        } catch {
+          parsedError = { error: errorData };
+        }
+        
+        console.error(`[${new Date().toISOString()}] [${requestId}] ❌ Erro ao criar checkout (${response.status}):`, parsedError);
+        
+        // Erro 401 (Unauthorized) - Token inválido, não tentar novamente
+        if (response.status === 401) {
+          const totalDuration = Date.now() - startTime;
+          console.error(`[${new Date().toISOString()}] [${requestId}] 🔐 ERRO DE AUTENTICAÇÃO: Token do Asaas inválido ou expirado`);
+          console.log(`[${new Date().toISOString()}] [${requestId}] Tempo total: ${totalDuration}ms`);
+          console.log(`[${new Date().toISOString()}] [${requestId}] ========================================`);
+          
+          const errorResponse = NextResponse.json(
+            { 
+              error: 'Erro de autenticação com o gateway de pagamento',
+              details: parsedError,
+              code: 'AUTH_ERROR'
+            },
+            { status: 401 }
+          );
+          errorResponse.headers.set('X-Request-ID', requestId);
+          errorResponse.headers.set('Access-Control-Allow-Origin', '*');
+          errorResponse.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+          errorResponse.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+          return errorResponse;
+        }
         
         // Se for erro 502, 503 ou 504, tentar novamente
         if ((response.status === 502 || response.status === 503 || response.status === 504) && attempt < maxRetries) {
@@ -112,7 +161,7 @@ export async function POST(request: NextRequest) {
         console.log(`[${new Date().toISOString()}] [${requestId}] ========================================`);
         
         const errorResponse = NextResponse.json(
-          { error: 'Erro ao criar checkout', details: errorData },
+          { error: 'Erro ao criar checkout', details: parsedError },
           { status: response.status }
         );
         errorResponse.headers.set('X-Request-ID', requestId);
