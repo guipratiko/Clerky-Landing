@@ -167,10 +167,10 @@ export async function POST(request: NextRequest) {
       
       // Se ainda houver tentativas e for um erro recuperável, continuar
       if (attempt < maxRetries && (
-        (lastError.message.includes('timeout') || 
-         lastError.message.includes('AbortError') ||
-         lastError.message.includes('fetch') ||
-         lastError.message.includes('network')))
+        lastError.message.includes('timeout') || 
+        lastError.message.includes('AbortError') ||
+        lastError.message.includes('fetch') ||
+        lastError.message.includes('network')
       )) {
         continue; // Tentar novamente
       }
