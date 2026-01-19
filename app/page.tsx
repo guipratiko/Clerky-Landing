@@ -17,10 +17,13 @@ import { Testimonials } from "./(components)/Testimonials";
 import { FAQ } from "./(components)/FAQ";
 import { CTA } from "./(components)/CTA";
 import { CookieBanner } from "./(components)/CookieBanner";
+import { KeepAlive } from "./(components)/KeepAlive";
 
 export default function Home() {
   return (
     <SmoothScroll>
+      {/* Keep-Alive: Mantém o servidor ativo para evitar cold starts */}
+      <KeepAlive />
       {/* Hero Section */}
       <Hero enableParticles={true} />
 

@@ -348,15 +348,15 @@ export function Pricing() {
                       )}
                     </Button>
                   ) : (
-                    <Button
-                      asChild
+                  <Button
+                    asChild
                       className="w-full"
                       variant="outline"
-                    >
+                  >
                       <Link href={plan.href}>
-                        {plan.cta}
-                      </Link>
-                    </Button>
+                      {plan.cta}
+                    </Link>
+                  </Button>
                   )}
                 </div>
               </GlassCard>

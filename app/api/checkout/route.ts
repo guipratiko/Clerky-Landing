@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 // Configurar timeout máximo de 30 segundos para esta rota
 export const maxDuration = 30;
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
@@ -19,30 +21,41 @@ export async function POST(request: NextRequest) {
   console.log(`[${new Date().toISOString()}] [${requestId}] Method: ${request.method}`);
   console.log(`[${new Date().toISOString()}] [${requestId}] Iniciando criação de checkout`);
   
-  try {
-    const accessToken = process.env.ASAAS_ACCESS_TOKEN || '$aact_hmlg_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6OjMwNGQzNjc2LWExNzYtNDA2ZS04M2FjLWVhNmQzODg2NjBkYzo6JGFhY2hfYjUxMGM0ZDUtOTMwMS00MmZlLTlkMzctMDk3MDhhZmUzMzE0';
-    
-    // Calcular próxima data de vencimento (próximo mês)
-    const nextDueDate = new Date();
-    nextDueDate.setMonth(nextDueDate.getMonth() + 1);
-    const nextDueDateString = nextDueDate.toISOString().split('T')[0];
-    console.log(`[${new Date().toISOString()}] [${requestId}] Próxima data de vencimento: ${nextDueDateString}`);
-
-    const apiUrl = process.env.ASAAS_API_URL || 'https://api-sandbox.asaas.com/v3/checkouts';
-    console.log(`[${new Date().toISOString()}] [${requestId}] URL da API Asaas: ${apiUrl}`);
-    
-    // Criar AbortController para timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => {
-      console.log(`[${new Date().toISOString()}] [${requestId}] ⚠️ TIMEOUT: Requisição demorou mais de 30 segundos`);
-      controller.abort();
-    }, 30000); // 30 segundos
-    
-    console.log(`[${new Date().toISOString()}] [${requestId}] Enviando requisição para Asaas...`);
-    const fetchStartTime = Date.now();
-    
+  // Retry interno (2 tentativas adicionais = 3 no total)
+  const maxRetries = 2;
+  let lastError: Error | null = null;
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      const response = await fetch(apiUrl, {
+      if (attempt > 0) {
+        console.log(`[${new Date().toISOString()}] [${requestId}] 🔄 Tentativa ${attempt + 1}/${maxRetries + 1}`);
+        // Aguardar antes de tentar novamente (backoff exponencial)
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+      }
+      
+      const accessToken = process.env.ASAAS_ACCESS_TOKEN || '$aact_hmlg_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6OjMwNGQzNjc2LWExNzYtNDA2ZS04M2FjLWVhNmQzODg2NjBkYzo6JGFhY2hfYjUxMGM0ZDUtOTMwMS00MmZlLTlkMzctMDk3MDhhZmUzMzE0';
+      
+      // Calcular próxima data de vencimento (próximo mês)
+      const nextDueDate = new Date();
+      nextDueDate.setMonth(nextDueDate.getMonth() + 1);
+      const nextDueDateString = nextDueDate.toISOString().split('T')[0];
+      console.log(`[${new Date().toISOString()}] [${requestId}] Próxima data de vencimento: ${nextDueDateString}`);
+
+      const apiUrl = process.env.ASAAS_API_URL || 'https://api-sandbox.asaas.com/v3/checkouts';
+      console.log(`[${new Date().toISOString()}] [${requestId}] URL da API Asaas: ${apiUrl}`);
+      
+      // Criar AbortController para timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => {
+        console.log(`[${new Date().toISOString()}] [${requestId}] ⚠️ TIMEOUT: Requisição demorou mais de 30 segundos`);
+        controller.abort();
+      }, 30000); // 30 segundos
+      
+      console.log(`[${new Date().toISOString()}] [${requestId}] Enviando requisição para Asaas...`);
+      const fetchStartTime = Date.now();
+      
+      try {
+        const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'accept': 'application/json',
@@ -83,6 +96,15 @@ export async function POST(request: NextRequest) {
       if (!response.ok) {
         const errorData = await response.text();
         console.error(`[${new Date().toISOString()}] [${requestId}] ❌ Erro ao criar checkout (${response.status}):`, errorData);
+        
+        // Se for erro 502, 503 ou 504, tentar novamente
+        if ((response.status === 502 || response.status === 503 || response.status === 504) && attempt < maxRetries) {
+          console.log(`[${new Date().toISOString()}] [${requestId}] ⚠️ Erro ${response.status} detectado, tentando novamente...`);
+          lastError = new Error(`Erro HTTP ${response.status}: ${errorData}`);
+          continue; // Tentar novamente
+        }
+        
+        // Se não for um erro recuperável ou já tentou todas as vezes, retornar erro
         const totalDuration = Date.now() - startTime;
         console.log(`[${new Date().toISOString()}] [${requestId}] Tempo total: ${totalDuration}ms`);
         console.log(`[${new Date().toISOString()}] [${requestId}] ========================================`);
@@ -92,6 +114,9 @@ export async function POST(request: NextRequest) {
           { status: response.status }
         );
         errorResponse.headers.set('X-Request-ID', requestId);
+        errorResponse.headers.set('Access-Control-Allow-Origin', '*');
+        errorResponse.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+        errorResponse.headers.set('Access-Control-Allow-Headers', 'Content-Type');
         return errorResponse;
       }
 
@@ -112,46 +137,88 @@ export async function POST(request: NextRequest) {
       console.log(`[${new Date().toISOString()}] [${requestId}] ✅ Resposta enviada com sucesso`);
       console.log(`[${new Date().toISOString()}] [${requestId}] ========================================`);
       return nextResponse;
-    } finally {
-      clearTimeout(timeoutId);
-    }
-  } catch (error) {
-    const totalDuration = Date.now() - startTime;
-    console.error(`[${new Date().toISOString()}] [${requestId}] ❌ Erro na API de checkout:`, error);
-    console.error(`[${new Date().toISOString()}] [${requestId}] Stack trace:`, error instanceof Error ? error.stack : 'N/A');
-    console.log(`[${new Date().toISOString()}] [${requestId}] Tempo total antes do erro: ${totalDuration}ms`);
-    
-    if (error instanceof Error) {
-      if (error.name === 'AbortError') {
-        console.log(`[${new Date().toISOString()}] [${requestId}] ⏱️ Erro de timeout detectado`);
-        console.log(`[${new Date().toISOString()}] [${requestId}] ========================================`);
-        const timeoutResponse = NextResponse.json(
-          { error: 'Timeout: A requisição demorou muito para responder. Por favor, tente novamente.' },
-          { status: 504 }
-        );
-        timeoutResponse.headers.set('X-Request-ID', requestId);
-        return timeoutResponse;
+      } catch (fetchError) {
+        clearTimeout(timeoutId);
+        const fetchDuration = Date.now() - fetchStartTime;
+        
+        console.error(`[${new Date().toISOString()}] [${requestId}] ❌ Erro na requisição fetch (${fetchDuration}ms):`, {
+          name: fetchError instanceof Error ? fetchError.name : 'Unknown',
+          message: fetchError instanceof Error ? fetchError.message : String(fetchError),
+        });
+        
+        // Se for timeout ou erro de rede, tentar novamente
+        if (
+          (fetchError instanceof Error && 
+           (fetchError.name === 'AbortError' || 
+            fetchError.message.includes('fetch') ||
+            fetchError.message.includes('network'))) &&
+          attempt < maxRetries
+        ) {
+          console.log(`[${new Date().toISOString()}] [${requestId}] ⚠️ Erro de rede/timeout detectado, tentando novamente...`);
+          lastError = fetchError instanceof Error ? fetchError : new Error('Erro desconhecido');
+          continue; // Tentar novamente
+        }
+        
+        throw fetchError; // Se não for recuperável ou já tentou todas as vezes, lançar erro
+      }
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error('Erro desconhecido');
+      console.error(`[${new Date().toISOString()}] [${requestId}] ❌ Erro na tentativa ${attempt + 1}:`, lastError.message);
+      
+      // Se ainda houver tentativas e for um erro recuperável, continuar
+      if (attempt < maxRetries && (
+        (lastError.message.includes('timeout') || 
+         lastError.message.includes('AbortError') ||
+         lastError.message.includes('fetch') ||
+         lastError.message.includes('network')))
+      )) {
+        continue; // Tentar novamente
       }
       
-      console.error(`[${new Date().toISOString()}] [${requestId}] Erro: ${error.message}`);
-      console.log(`[${new Date().toISOString()}] [${requestId}] ========================================`);
-      const errorResponse = NextResponse.json(
-        { error: `Erro ao processar checkout: ${error.message}` },
-        { status: 500 }
+      // Se chegou aqui, todas as tentativas falharam ou erro não recuperável
+      break;
+    }
+  }
+  
+  // Se chegou aqui, todas as tentativas falharam
+  const totalDuration = Date.now() - startTime;
+  console.error(`[${new Date().toISOString()}] [${requestId}] ❌ FALHA FINAL após ${maxRetries + 1} tentativas (${totalDuration}ms)`);
+  console.error(`[${new Date().toISOString()}] [${requestId}] Último erro:`, lastError);
+  console.log(`[${new Date().toISOString()}] [${requestId}] ========================================`);
+  
+  if (lastError instanceof Error) {
+    if (lastError.name === 'AbortError' || lastError.message.includes('timeout')) {
+      const timeoutResponse = NextResponse.json(
+        { error: 'Timeout: A requisição demorou muito para responder. Por favor, tente novamente.' },
+        { status: 504 }
       );
-      errorResponse.headers.set('X-Request-ID', requestId);
-      return errorResponse;
+      timeoutResponse.headers.set('X-Request-ID', requestId);
+      timeoutResponse.headers.set('Access-Control-Allow-Origin', '*');
+      timeoutResponse.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+      timeoutResponse.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+      return timeoutResponse;
     }
     
-    console.error(`[${new Date().toISOString()}] [${requestId}] Erro desconhecido`);
-    console.log(`[${new Date().toISOString()}] [${requestId}] ========================================`);
-    const unknownErrorResponse = NextResponse.json(
-      { error: 'Erro interno do servidor' },
+    const errorResponse = NextResponse.json(
+      { error: `Erro ao processar checkout: ${lastError.message}` },
       { status: 500 }
     );
-    unknownErrorResponse.headers.set('X-Request-ID', requestId);
-    return unknownErrorResponse;
+    errorResponse.headers.set('X-Request-ID', requestId);
+    errorResponse.headers.set('Access-Control-Allow-Origin', '*');
+    errorResponse.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    errorResponse.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+    return errorResponse;
   }
+  
+  const unknownErrorResponse = NextResponse.json(
+    { error: 'Erro interno do servidor' },
+    { status: 500 }
+  );
+  unknownErrorResponse.headers.set('X-Request-ID', requestId);
+  unknownErrorResponse.headers.set('Access-Control-Allow-Origin', '*');
+  unknownErrorResponse.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  unknownErrorResponse.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+  return unknownErrorResponse;
 }
 
 // Adicionar handler OPTIONS para CORS
