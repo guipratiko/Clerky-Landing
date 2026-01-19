@@ -38,9 +38,6 @@ export function Header() {
         element.scrollIntoView({ behavior: "smooth", block: "start" });
         setIsMobileMenuOpen(false);
       }
-    } else {
-      // Para links externos ou rotas, apenas fechar o menu mobile se estiver aberto
-      setIsMobileMenuOpen(false);
     }
   };
 
@@ -78,11 +75,7 @@ export function Header() {
               key={link.label}
               href={link.href}
               className="text-sm font-medium text-text-body transition-colors hover:text-primary"
-              onClick={(e) => {
-                if (link.href.startsWith("#")) {
-                  handleSmoothScroll(e, link.href);
-                }
-              }}
+              onClick={(e) => handleSmoothScroll(e, link.href)}
             >
               {link.label}
             </Link>
@@ -133,9 +126,7 @@ export function Header() {
                   href={link.href}
                   className="text-base font-medium text-text-body transition-colors hover:text-primary"
                   onClick={(e) => {
-                    if (link.href.startsWith("#")) {
-                      handleSmoothScroll(e, link.href);
-                    }
+                    handleSmoothScroll(e, link.href);
                     setIsMobileMenuOpen(false);
                   }}
                 >
