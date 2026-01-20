@@ -1,30 +1,28 @@
 "use client";
 
-import { useState, useRef, useEffect, useTransition } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Check, Zap, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "./ui/GlassCard";
 import { gtag_report_conversion } from "@/lib/google-ads";
-import { createCheckout } from "@/app/actions/checkout";
 
 export function Pricing() {
   const [isLoadingPro, setIsLoadingPro] = useState(false);
   const [proError, setProError] = useState<string | null>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const abortControllerRef = useRef<AbortController | null>(null);
 
-  // Limpar timeouts quando o componente desmonta
+  // Limpar abort controller quando o componente desmonta
   useEffect(() => {
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
       }
     };
   }, []);
 
-  const handleProCheckout = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleProCheckout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     
     // Se já está carregando, não fazer nada
@@ -33,72 +31,84 @@ export function Pricing() {
     setIsLoadingPro(true);
     setProError(null);
 
-    // Limpar qualquer timeout anterior
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
+    // Cancelar requisição anterior se existir
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
     }
 
-    let requestCompleted = false;
+    // Criar novo AbortController para esta requisição
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
 
-    // Timeout de 30 segundos - resetar o estado se a requisição demorar muito
-    timeoutRef.current = setTimeout(() => {
-      if (!requestCompleted) {
-        console.warn("[CHECKOUT] Requisição demorou mais de 30 segundos - resetando estado");
+    // Timeout de 25 segundos no cliente
+    const timeoutId = setTimeout(() => {
+      if (!controller.signal.aborted) {
+        controller.abort();
+        console.warn("[CHECKOUT] Timeout no cliente (25s) - cancelando requisição");
         setProError("A requisição está demorando mais que o esperado. Por favor, tente novamente.");
         setIsLoadingPro(false);
-        requestCompleted = true;
       }
-    }, 30000);
+    }, 25000);
 
-    // Usar useTransition para gerenciar a Server Action
-    startTransition(async () => {
-      try {
-        console.log("[CHECKOUT] Iniciando Server Action no cliente...");
-        const result = await createCheckout();
-        console.log("[CHECKOUT] Server Action retornou:", result);
+    try {
+      console.log("[CHECKOUT] Iniciando requisição para API...");
+      
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        signal: controller.signal,
+      });
 
-        requestCompleted = true;
+      clearTimeout(timeoutId);
 
-        // Limpar timeout
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-          timeoutRef.current = null;
-        }
-
-        if (!result || !result.success) {
-          throw new Error(result?.error || "Erro ao criar checkout");
-        }
-
-        if (!result.link) {
-          throw new Error("Link de checkout não retornado");
-        }
-
-        // Rastrear conversão
-        gtag_report_conversion(result.link, 197.0, "BRL");
-
-        // Redirecionar para o checkout
-        window.location.href = result.link;
-      } catch (error) {
-        requestCompleted = true;
-
-        // Limpar timeout
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-          timeoutRef.current = null;
-        }
-
-        console.error("[CHECKOUT] Erro ao processar checkout:", error);
-        
-        let errorMessage = "Erro ao processar checkout. Tente novamente.";
-        
-        if (error instanceof Error) {
-          errorMessage = error.message;
-        }
-        
-        setProError(errorMessage);
-        setIsLoadingPro(false);
+      // Verificar se foi cancelado
+      if (controller.signal.aborted) {
+        return;
       }
-    });
+
+      const result = await response.json();
+      console.log("[CHECKOUT] Resposta da API:", result);
+
+      if (!response.ok || !result || !result.success) {
+        throw new Error(result?.error || "Erro ao criar checkout");
+      }
+
+      if (!result.link) {
+        throw new Error("Link de checkout não retornado");
+      }
+
+      // Rastrear conversão
+      gtag_report_conversion(result.link, 197.0, "BRL");
+
+      // Redirecionar para o checkout
+      window.location.href = result.link;
+    } catch (error) {
+      clearTimeout(timeoutId);
+
+      // Ignorar erros de abort
+      if (error instanceof Error && error.name === 'AbortError') {
+        console.log("[CHECKOUT] Requisição cancelada");
+        return;
+      }
+
+      console.error("[CHECKOUT] Erro ao processar checkout:", error);
+      
+      let errorMessage = "Erro ao processar checkout. Tente novamente.";
+      
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      setProError(errorMessage);
+      setIsLoadingPro(false);
+    } finally {
+      // Limpar referência do controller
+      if (abortControllerRef.current === controller) {
+        abortControllerRef.current = null;
+      }
+    }
   };
 
   const plans = [
