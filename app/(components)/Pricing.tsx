@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useTransition } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Check, Zap, Loader2 } from "lucide-react";
@@ -13,6 +13,7 @@ export function Pricing() {
   const [isLoadingPro, setIsLoadingPro] = useState(false);
   const [proError, setProError] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   // Limpar timeouts quando o componente desmonta
   useEffect(() => {
@@ -23,11 +24,11 @@ export function Pricing() {
     };
   }, []);
 
-  const handleProCheckout = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleProCheckout = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     
     // Se já está carregando, não fazer nada
-    if (isLoadingPro) return;
+    if (isLoadingPro || isPending) return;
     
     setIsLoadingPro(true);
     setProError(null);
@@ -48,51 +49,55 @@ export function Pricing() {
       }
     }, 40000);
 
-    try {
-      // Usar Server Action ao invés de API Route
-      const result = await createCheckout();
+    // Usar useTransition para gerenciar a Server Action
+    startTransition(async () => {
+      try {
+        console.log("[CHECKOUT] Iniciando Server Action no cliente...");
+        const result = await createCheckout();
+        console.log("[CHECKOUT] Server Action retornou:", result);
 
-      requestCompleted = true;
+        requestCompleted = true;
 
-      // Limpar timeout
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
+        // Limpar timeout
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+          timeoutRef.current = null;
+        }
+
+        if (!result || !result.success) {
+          throw new Error(result?.error || "Erro ao criar checkout");
+        }
+
+        if (!result.link) {
+          throw new Error("Link de checkout não retornado");
+        }
+
+        // Rastrear conversão
+        gtag_report_conversion(result.link, 197.0, "BRL");
+
+        // Redirecionar para o checkout
+        window.location.href = result.link;
+      } catch (error) {
+        requestCompleted = true;
+
+        // Limpar timeout
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+          timeoutRef.current = null;
+        }
+
+        console.error("[CHECKOUT] Erro ao processar checkout:", error);
+        
+        let errorMessage = "Erro ao processar checkout. Tente novamente.";
+        
+        if (error instanceof Error) {
+          errorMessage = error.message;
+        }
+        
+        setProError(errorMessage);
+        setIsLoadingPro(false);
       }
-
-      if (!result.success) {
-        throw new Error(result.error || "Erro ao criar checkout");
-      }
-
-      if (!result.link) {
-        throw new Error("Link de checkout não retornado");
-      }
-
-      // Rastrear conversão
-      gtag_report_conversion(result.link, 197.0, "BRL");
-
-      // Redirecionar para o checkout
-      window.location.href = result.link;
-    } catch (error) {
-      requestCompleted = true;
-
-      // Limpar timeout
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-
-      console.error("Erro ao processar checkout:", error);
-      
-      let errorMessage = "Erro ao processar checkout. Tente novamente.";
-      
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      
-      setProError(errorMessage);
-      setIsLoadingPro(false);
-    }
+    });
   };
 
   const plans = [
@@ -271,11 +276,11 @@ export function Pricing() {
                     <div className="space-y-2">
                       <Button
                         onClick={handleProCheckout}
-                        disabled={isLoadingPro}
+                        disabled={isLoadingPro || isPending}
                         className={`w-full ${plan.highlighted ? "glow-primary" : ""}`}
                         variant={plan.highlighted ? "default" : "outline"}
                       >
-                        {isLoadingPro ? (
+                        {(isLoadingPro || isPending) ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                             Processando...

@@ -81,36 +81,40 @@ export async function createCheckout() {
       console.error("[CHECKOUT] Erro na API Asaas:", response.status, errorData);
       const totalDuration = Date.now() - startTime;
       console.log(`[CHECKOUT] Total: ${totalDuration}ms`);
-      return {
+      // Retornar apenas dados serializáveis simples
+      return JSON.parse(JSON.stringify({
         success: false,
         error: "Erro ao criar checkout",
-        details: errorData,
-      };
+      }));
     }
 
     const data = await response.json();
     const totalDuration = Date.now() - startTime;
     console.log(`[CHECKOUT] Sucesso! Total: ${totalDuration}ms`);
 
-    if (!data.link) {
+    if (!data.link || typeof data.link !== 'string') {
       console.error("[CHECKOUT] Link não encontrado na resposta:", data);
-      return {
+      return JSON.parse(JSON.stringify({
         success: false,
         error: "Link de checkout não retornado pela API",
-      };
+      }));
     }
 
-    return {
+    // Garantir que o retorno seja serializável
+    const result = {
       success: true,
-      link: data.link,
+      link: String(data.link),
     };
+    
+    console.log("[CHECKOUT] Retornando resultado:", { success: result.success, linkLength: result.link.length });
+    return JSON.parse(JSON.stringify(result));
   } catch (error) {
     const totalDuration = Date.now() - startTime;
     console.error(`[CHECKOUT] Erro geral após ${totalDuration}ms:`, error);
-    return {
+    // Retornar apenas dados serializáveis simples
+    return JSON.parse(JSON.stringify({
       success: false,
-      error: "Erro ao processar checkout",
-      details: error instanceof Error ? error.message : "Erro desconhecido",
-    };
+      error: error instanceof Error ? error.message : "Erro ao processar checkout",
+    }));
   }
 }
