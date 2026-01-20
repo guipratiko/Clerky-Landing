@@ -48,17 +48,16 @@ export async function getProductImageBase64(): Promise<string | null> {
 
     const collection = database.collection(collectionName);
     
-    // Buscar por _id
-    let query: { _id: ObjectId } | { _id: string };
+    // Buscar por _id - sempre converter para ObjectId
+    let objectId: ObjectId;
     try {
-      // Tentar converter para ObjectId
-      query = { _id: new ObjectId(documentId) };
+      objectId = new ObjectId(documentId);
     } catch {
-      // Se falhar, usar como string (ObjectId aceita string também)
-      query = { _id: documentId };
+      // Se falhar na conversão, tentar criar um novo ObjectId (pode lançar erro)
+      throw new Error(`ID inválido do MongoDB: ${documentId}`);
     }
 
-    const document = await collection.findOne(query);
+    const document = await collection.findOne({ _id: objectId });
 
     if (!document) {
       console.warn(`[MONGODB] Documento não encontrado na collection "${collectionName}" com _id: ${documentId}`);

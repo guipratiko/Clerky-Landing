@@ -4,6 +4,7 @@ import { getProductImageBase64 } from "@/lib/mongodb";
 export const dynamic = 'force-dynamic';
 export const maxDuration = 30; // Timeout máximo de 30 segundos
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function POST(_request: NextRequest) {
   const startTime = Date.now();
   console.log("[CHECKOUT API] Requisição recebida:", new Date().toISOString());
