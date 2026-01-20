@@ -7,7 +7,14 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/api/", "/admin/"],
+      disallow: [
+        "/api/",
+        "/admin/",
+        "/app/",
+        "/casinest/",
+        "/virtuals/",
+        "/dev/status", // Página dinâmica de status, não precisa ser indexada
+      ],
     },
     sitemap: `${baseUrl}/sitemap.xml`,
   };
