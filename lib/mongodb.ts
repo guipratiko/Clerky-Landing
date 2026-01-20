@@ -54,8 +54,8 @@ export async function getProductImageBase64(): Promise<string | null> {
       // Tentar converter para ObjectId
       query = { _id: new ObjectId(documentId) };
     } catch {
-      // Se falhar, usar como string
-      query = { _id: documentId as any };
+      // Se falhar, usar como string (ObjectId aceita string também)
+      query = { _id: documentId };
     }
 
     const document = await collection.findOne(query);

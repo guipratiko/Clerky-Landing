@@ -4,7 +4,7 @@ import { getProductImageBase64 } from "@/lib/mongodb";
 export const dynamic = 'force-dynamic';
 export const maxDuration = 30; // Timeout máximo de 30 segundos
 
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   const startTime = Date.now();
   console.log("[CHECKOUT API] Requisição recebida:", new Date().toISOString());
   
@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
         } else if (errorData.message) {
           errorMessage = errorData.message;
         }
-      } catch (parseError) {
+      } catch {
         // Se não for JSON, usar o texto como mensagem
         if (errorText && errorText.trim()) {
           errorMessage = errorText;
