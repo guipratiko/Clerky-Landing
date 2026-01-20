@@ -53,7 +53,11 @@ export function Pricing() {
     try {
       console.log("[CHECKOUT] Iniciando requisição para API...");
       
-      const response = await fetch("/api/checkout", {
+      // URL do backend externo (padrão: http://localhost:3001 em dev, ou variável de ambiente)
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+      const apiUrl = `${backendUrl}/api/checkout`;
+      
+      const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -33,11 +33,23 @@ export function Header() {
   const handleSmoothScroll = (href: string) => {
     if (!href.startsWith("#")) return;
 
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-      setIsMobileMenuOpen(false);
-    }
+    // Fechar menu mobile primeiro
+    setIsMobileMenuOpen(false);
+    
+    // Pequeno delay para garantir que o menu fechou antes de fazer scroll
+    setTimeout(() => {
+      const element = document.querySelector(href);
+      if (element) {
+        const headerOffset = 80; // Altura do header
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth"
+        });
+      }
+    }, 100);
   };
 
   return (
