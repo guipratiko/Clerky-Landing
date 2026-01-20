@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Check, Zap, Loader2 } from "lucide-react";
@@ -11,15 +11,41 @@ import { gtag_report_conversion } from "@/lib/google-ads";
 export function Pricing() {
   const [isLoadingPro, setIsLoadingPro] = useState(false);
   const [proError, setProError] = useState<string | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Limpar timeouts quando o componente desmonta
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleProCheckout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    
+    // Se já está carregando, não fazer nada
+    if (isLoadingPro) return;
+    
     setIsLoadingPro(true);
     setProError(null);
 
-    // Criar AbortController para timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 segundos
+    // Limpar qualquer timeout anterior
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    let requestCompleted = false;
+
+    // Timeout de 30 segundos - apenas para resetar o estado se a requisição demorar muito
+    timeoutRef.current = setTimeout(() => {
+      if (!requestCompleted) {
+        console.warn("Requisição demorou mais de 30 segundos");
+        setProError("A requisição está demorando mais que o esperado. Por favor, tente novamente.");
+        setIsLoadingPro(false);
+      }
+    }, 30000);
 
     try {
       const response = await fetch("/api/checkout", {
@@ -27,10 +53,16 @@ export function Pricing() {
         headers: {
           "Content-Type": "application/json",
         },
-        signal: controller.signal,
+        cache: "no-store", // Evitar cache
       });
 
-      clearTimeout(timeoutId);
+      requestCompleted = true;
+
+      // Limpar timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: "Erro desconhecido" }));
@@ -49,14 +81,22 @@ export function Pricing() {
       // Redirecionar para o checkout
       window.location.href = data.link;
     } catch (error) {
-      clearTimeout(timeoutId);
+      requestCompleted = true;
+
+      // Limpar timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+
       console.error("Erro ao processar checkout:", error);
       
       let errorMessage = "Erro ao processar checkout. Tente novamente.";
       
       if (error instanceof Error) {
-        if (error.name === "AbortError") {
-          errorMessage = "Tempo de espera esgotado. Por favor, tente novamente.";
+        // Não mostrar mensagem de abort se foi cancelado pelo Next.js
+        if (error.name === "AbortError" || error.message.includes("aborted")) {
+          errorMessage = "A requisição foi cancelada. Por favor, tente novamente.";
         } else {
           errorMessage = error.message;
         }
