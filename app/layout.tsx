@@ -95,6 +95,17 @@ export const metadata: Metadata = {
     // google: "", // TODO: Adicionar Google Search Console verification
     // yandex: "", // TODO: Adicionar Yandex verification
   },
+  icons: {
+    icon: [
+      { url: "/img/favicon.png", type: "image/png" },
+      { url: "/img/favicon.png", type: "image/png", sizes: "32x32" },
+      { url: "/img/favicon.png", type: "image/png", sizes: "16x16" },
+    ],
+    apple: [
+      { url: "/img/favicon.png", type: "image/png" },
+    ],
+    shortcut: "/img/favicon.png",
+  },
 };
 
 export default function RootLayout({
@@ -141,9 +152,6 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={`${inter.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
       <head>
-        {/* Favicon */}
-        <link rel="icon" href="/img/favicon.png" type="image/png" />
-        
         {/* Schema.org JSON-LD */}
         <script
           type="application/ld+json"
