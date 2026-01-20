@@ -30,14 +30,13 @@ export function Header() {
     { label: "Status", href: "/dev/status" },
   ];
 
-  const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    if (href.startsWith("#")) {
-      e.preventDefault();
-      const element = document.querySelector(href);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
-        setIsMobileMenuOpen(false);
-      }
+  const handleSmoothScroll = (href: string) => {
+    if (!href.startsWith("#")) return;
+
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+      setIsMobileMenuOpen(false);
     }
   };
 
@@ -75,7 +74,12 @@ export function Header() {
               key={link.label}
               href={link.href}
               className="text-sm font-medium text-text-body transition-colors hover:text-primary"
-              onClick={(e) => handleSmoothScroll(e, link.href)}
+            onClick={(e) => {
+              if (link.href.startsWith("#")) {
+                e.preventDefault();
+                handleSmoothScroll(link.href);
+              }
+            }}
             >
               {link.label}
             </Link>
@@ -121,17 +125,25 @@ export function Header() {
           >
             <nav className="container mx-auto flex flex-col space-y-4 px-4 py-6">
               {navLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className="text-base font-medium text-text-body transition-colors hover:text-primary"
-                  onClick={(e) => {
-                    handleSmoothScroll(e, link.href);
-                    setIsMobileMenuOpen(false);
-                  }}
-                >
-                  {link.label}
-                </Link>
+                link.href.startsWith("#") ? (
+                  <button
+                    key={link.label}
+                    type="button"
+                    className="text-left text-base font-medium text-text-body transition-colors hover:text-primary"
+                    onClick={() => handleSmoothScroll(link.href)}
+                  >
+                    {link.label}
+                  </button>
+                ) : (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className="text-base font-medium text-text-body transition-colors hover:text-primary"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                )
               ))}
               <div className="flex flex-col space-y-3 border-t border-border pt-4">
                 <Button variant="ghost" asChild className="w-full">

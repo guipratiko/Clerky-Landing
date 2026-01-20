@@ -28,7 +28,7 @@ export function Pricing() {
     e.preventDefault();
     
     // Se já está carregando, não fazer nada
-    if (isLoadingPro || isPending) return;
+    if (isLoadingPro) return;
     
     setIsLoadingPro(true);
     setProError(null);
@@ -40,14 +40,15 @@ export function Pricing() {
 
     let requestCompleted = false;
 
-    // Timeout de 40 segundos - apenas para resetar o estado se a requisição demorar muito
+    // Timeout de 30 segundos - resetar o estado se a requisição demorar muito
     timeoutRef.current = setTimeout(() => {
       if (!requestCompleted) {
-        console.warn("[CHECKOUT] Requisição demorou mais de 40 segundos");
+        console.warn("[CHECKOUT] Requisição demorou mais de 30 segundos - resetando estado");
         setProError("A requisição está demorando mais que o esperado. Por favor, tente novamente.");
         setIsLoadingPro(false);
+        requestCompleted = true;
       }
-    }, 40000);
+    }, 30000);
 
     // Usar useTransition para gerenciar a Server Action
     startTransition(async () => {
@@ -276,11 +277,11 @@ export function Pricing() {
                     <div className="space-y-2">
                       <Button
                         onClick={handleProCheckout}
-                        disabled={isLoadingPro || isPending}
+                        disabled={isLoadingPro}
                         className={`w-full ${plan.highlighted ? "glow-primary" : ""}`}
                         variant={plan.highlighted ? "default" : "outline"}
                       >
-                        {(isLoadingPro || isPending) ? (
+                        {isLoadingPro ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                             Processando...

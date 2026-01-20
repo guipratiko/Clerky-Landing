@@ -1,5 +1,8 @@
 import { MetadataRoute } from "next";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // Revalidar a cada hora
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://clerky.com.br";
   const now = new Date();

@@ -63,16 +63,37 @@ export async function createCheckout() {
     console.log("[CHECKOUT] Enviando requisição para Asaas...", asaasApiUrl);
     const fetchStartTime = Date.now();
 
-    const response = await fetch(asaasApiUrl, {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        "content-type": "application/json",
-        access_token: asaasAccessToken,
-      },
-      body: JSON.stringify(requestBody),
-    });
+    // Timeout de 20 segundos para evitar requisições penduradas
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, 20000);
 
+    let response: Response;
+    try {
+      response = await fetch(asaasApiUrl, {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+          access_token: asaasAccessToken,
+        },
+        body: JSON.stringify(requestBody),
+        signal: controller.signal,
+      });
+    } catch (fetchError) {
+      clearTimeout(timeoutId);
+      if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+        console.error("[CHECKOUT] Requisição cancelada por timeout (20s)");
+        return {
+          success: false,
+          error: "A requisição demorou muito para responder. Por favor, tente novamente.",
+        };
+      }
+      throw fetchError;
+    }
+
+    clearTimeout(timeoutId);
     const fetchDuration = Date.now() - fetchStartTime;
     console.log(`[CHECKOUT] Resposta recebida da Asaas em ${fetchDuration}ms`);
 
