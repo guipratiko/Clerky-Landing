@@ -25,12 +25,11 @@ export function Pricing() {
         },
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Erro ao criar checkout");
-      }
-
       const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Erro ao criar checkout");
+      }
 
       if (!data.link) {
         throw new Error("Link de checkout não retornado");
