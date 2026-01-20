@@ -38,14 +38,14 @@ export function Pricing() {
 
     let requestCompleted = false;
 
-    // Timeout de 30 segundos - apenas para resetar o estado se a requisição demorar muito
+    // Timeout de 40 segundos - apenas para resetar o estado se a requisição demorar muito
     timeoutRef.current = setTimeout(() => {
       if (!requestCompleted) {
-        console.warn("Requisição demorou mais de 30 segundos");
+        console.warn("[CHECKOUT] Requisição demorou mais de 40 segundos");
         setProError("A requisição está demorando mais que o esperado. Por favor, tente novamente.");
         setIsLoadingPro(false);
       }
-    }, 30000);
+    }, 40000);
 
     try {
       const response = await fetch("/api/checkout", {
