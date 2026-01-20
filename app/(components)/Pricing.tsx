@@ -7,6 +7,7 @@ import { Check, Zap, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "./ui/GlassCard";
 import { gtag_report_conversion } from "@/lib/google-ads";
+import { createCheckout } from "@/app/actions/checkout";
 
 export function Pricing() {
   const [isLoadingPro, setIsLoadingPro] = useState(false);
@@ -48,13 +49,8 @@ export function Pricing() {
     }, 40000);
 
     try {
-      const response = await fetch("/api/checkout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        cache: "no-store", // Evitar cache
-      });
+      // Usar Server Action ao invés de API Route
+      const result = await createCheckout();
 
       requestCompleted = true;
 
@@ -64,22 +60,19 @@ export function Pricing() {
         timeoutRef.current = null;
       }
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: "Erro desconhecido" }));
-        throw new Error(errorData.error || "Erro ao criar checkout");
+      if (!result.success) {
+        throw new Error(result.error || "Erro ao criar checkout");
       }
 
-      const data = await response.json();
-
-      if (!data.link) {
+      if (!result.link) {
         throw new Error("Link de checkout não retornado");
       }
 
       // Rastrear conversão
-      gtag_report_conversion(data.link, 197.0, "BRL");
+      gtag_report_conversion(result.link, 197.0, "BRL");
 
       // Redirecionar para o checkout
-      window.location.href = data.link;
+      window.location.href = result.link;
     } catch (error) {
       requestCompleted = true;
 
@@ -94,12 +87,7 @@ export function Pricing() {
       let errorMessage = "Erro ao processar checkout. Tente novamente.";
       
       if (error instanceof Error) {
-        // Não mostrar mensagem de abort se foi cancelado pelo Next.js
-        if (error.name === "AbortError" || error.message.includes("aborted")) {
-          errorMessage = "A requisição foi cancelada. Por favor, tente novamente.";
-        } else {
-          errorMessage = error.message;
-        }
+        errorMessage = error.message;
       }
       
       setProError(errorMessage);

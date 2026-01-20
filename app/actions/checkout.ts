@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+"use server";
 
-export async function POST(request: NextRequest) {
+export async function createCheckout() {
   const startTime = Date.now();
-  console.log("[CHECKOUT] Requisição recebida:", new Date().toISOString());
+  console.log("[CHECKOUT] Server Action iniciada:", new Date().toISOString());
   
   try {
     const asaasApiUrl = process.env.ASAAS_API_URL;
@@ -23,16 +23,10 @@ export async function POST(request: NextRequest) {
         hasUrl: !!asaasApiUrl,
         hasToken: !!asaasAccessToken,
       });
-      return NextResponse.json(
-        { 
-          error: "Configuração da API Asaas não encontrada",
-          debug: {
-            hasUrl: !!asaasApiUrl,
-            hasToken: !!asaasAccessToken,
-          }
-        },
-        { status: 500 }
-      );
+      return {
+        success: false,
+        error: "Configuração da API Asaas não encontrada",
+      };
     }
 
     // Calcular próxima data de vencimento (próximo mês)
@@ -66,83 +60,57 @@ export async function POST(request: NextRequest) {
       },
     };
 
-    // Criar AbortController para timeout (20 segundos)
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => {
-      console.log("[CHECKOUT] Timeout após 20 segundos");
-      controller.abort();
-    }, 20000);
+    console.log("[CHECKOUT] Enviando requisição para Asaas...", asaasApiUrl);
+    const fetchStartTime = Date.now();
 
-    try {
-      console.log("[CHECKOUT] Enviando requisição para Asaas...", asaasApiUrl);
-      const fetchStartTime = Date.now();
-      
-      const response = await fetch(asaasApiUrl, {
-        method: "POST",
-        headers: {
-          accept: "application/json",
-          "content-type": "application/json",
-          access_token: asaasAccessToken,
-        },
-        signal: controller.signal,
-        body: JSON.stringify(requestBody),
-      });
+    const response = await fetch(asaasApiUrl, {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        access_token: asaasAccessToken,
+      },
+      body: JSON.stringify(requestBody),
+    });
 
-      const fetchDuration = Date.now() - fetchStartTime;
-      console.log(`[CHECKOUT] Resposta recebida da Asaas em ${fetchDuration}ms`);
+    const fetchDuration = Date.now() - fetchStartTime;
+    console.log(`[CHECKOUT] Resposta recebida da Asaas em ${fetchDuration}ms`);
 
-      clearTimeout(timeoutId);
-
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        const errorData = await response.text();
-        console.error("[CHECKOUT] Erro na API Asaas:", response.status, errorData);
-        const totalDuration = Date.now() - startTime;
-        console.log(`[CHECKOUT] Total: ${totalDuration}ms`);
-        return NextResponse.json(
-          { error: "Erro ao criar checkout", details: errorData },
-          { status: response.status }
-        );
-      }
-
-      const data = await response.json();
+    if (!response.ok) {
+      const errorData = await response.text();
+      console.error("[CHECKOUT] Erro na API Asaas:", response.status, errorData);
       const totalDuration = Date.now() - startTime;
-      console.log(`[CHECKOUT] Sucesso! Total: ${totalDuration}ms`);
-
-      if (!data.link) {
-        console.error("[CHECKOUT] Link não encontrado na resposta:", data);
-        return NextResponse.json(
-          { error: "Link de checkout não retornado pela API" },
-          { status: 500 }
-        );
-      }
-
-      return NextResponse.json({ link: data.link });
-    } catch (fetchError) {
-      clearTimeout(timeoutId);
-      const totalDuration = Date.now() - startTime;
-      
-      if (fetchError instanceof Error && fetchError.name === "AbortError") {
-        console.error(`[CHECKOUT] Timeout após ${totalDuration}ms`);
-        return NextResponse.json(
-          { error: "Tempo de espera esgotado. Tente novamente." },
-          { status: 504 }
-        );
-      }
-      
-      console.error(`[CHECKOUT] Erro na requisição após ${totalDuration}ms:`, fetchError);
-      throw fetchError;
+      console.log(`[CHECKOUT] Total: ${totalDuration}ms`);
+      return {
+        success: false,
+        error: "Erro ao criar checkout",
+        details: errorData,
+      };
     }
+
+    const data = await response.json();
+    const totalDuration = Date.now() - startTime;
+    console.log(`[CHECKOUT] Sucesso! Total: ${totalDuration}ms`);
+
+    if (!data.link) {
+      console.error("[CHECKOUT] Link não encontrado na resposta:", data);
+      return {
+        success: false,
+        error: "Link de checkout não retornado pela API",
+      };
+    }
+
+    return {
+      success: true,
+      link: data.link,
+    };
   } catch (error) {
     const totalDuration = Date.now() - startTime;
     console.error(`[CHECKOUT] Erro geral após ${totalDuration}ms:`, error);
-    return NextResponse.json(
-      {
-        error: "Erro ao processar checkout",
-        details: error instanceof Error ? error.message : "Erro desconhecido",
-      },
-      { status: 500 }
-    );
+    return {
+      success: false,
+      error: "Erro ao processar checkout",
+      details: error instanceof Error ? error.message : "Erro desconhecido",
+    };
   }
 }
