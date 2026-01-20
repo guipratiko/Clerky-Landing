@@ -44,14 +44,20 @@ export async function POST(request: NextRequest) {
     nextDueDate.setMonth(nextDueDate.getMonth() + 1);
     const nextDueDateStr = nextDueDate.toISOString().split("T")[0];
 
-    const response = await fetch(asaasApiUrl, {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        "content-type": "application/json",
-        access_token: asaasAccessToken,
-      },
-      body: JSON.stringify({
+    // Criar AbortController para timeout (25 segundos)
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+    try {
+      const response = await fetch(asaasApiUrl, {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+          access_token: asaasAccessToken,
+        },
+        signal: controller.signal,
+        body: JSON.stringify({
         billingTypes: ["CREDIT_CARD"],
         chargeTypes: ["RECURRENT"],
         callback: {
@@ -74,28 +80,42 @@ export async function POST(request: NextRequest) {
           cycle: "MONTHLY",
           nextDueDate: nextDueDateStr,
         },
-      }),
-    });
+        }),
+      });
 
-    if (!response.ok) {
-      const errorData = await response.text();
-      console.error("Erro na API Asaas:", errorData);
-      return NextResponse.json(
-        { error: "Erro ao criar checkout", details: errorData },
-        { status: response.status }
-      );
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error("Erro na API Asaas:", errorData);
+        return NextResponse.json(
+          { error: "Erro ao criar checkout", details: errorData },
+          { status: response.status }
+        );
+      }
+
+      const data = await response.json();
+
+      if (!data.link) {
+        return NextResponse.json(
+          { error: "Link de checkout não retornado pela API" },
+          { status: 500 }
+        );
+      }
+
+      return NextResponse.json({ link: data.link });
+    } catch (fetchError) {
+      clearTimeout(timeoutId);
+      
+      if (fetchError instanceof Error && fetchError.name === "AbortError") {
+        console.error("Timeout na requisição para API Asaas");
+        return NextResponse.json(
+          { error: "Tempo de espera esgotado. Tente novamente." },
+          { status: 504 }
+        );
+      }
+      throw fetchError;
     }
-
-    const data = await response.json();
-
-    if (!data.link) {
-      return NextResponse.json(
-        { error: "Link de checkout não retornado pela API" },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({ link: data.link });
   } catch (error) {
     console.error("Erro ao processar checkout:", error);
     return NextResponse.json(

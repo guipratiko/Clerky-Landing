@@ -17,19 +17,27 @@ export function Pricing() {
     setIsLoadingPro(true);
     setProError(null);
 
+    // Criar AbortController para timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 segundos
+
     try {
       const response = await fetch("/api/checkout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        signal: controller.signal,
       });
 
-      const data = await response.json();
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
-        throw new Error(data.error || "Erro ao criar checkout");
+        const errorData = await response.json().catch(() => ({ error: "Erro desconhecido" }));
+        throw new Error(errorData.error || "Erro ao criar checkout");
       }
+
+      const data = await response.json();
 
       if (!data.link) {
         throw new Error("Link de checkout não retornado");
@@ -41,12 +49,20 @@ export function Pricing() {
       // Redirecionar para o checkout
       window.location.href = data.link;
     } catch (error) {
+      clearTimeout(timeoutId);
       console.error("Erro ao processar checkout:", error);
-      setProError(
-        error instanceof Error
-          ? error.message
-          : "Erro ao processar checkout. Tente novamente."
-      );
+      
+      let errorMessage = "Erro ao processar checkout. Tente novamente.";
+      
+      if (error instanceof Error) {
+        if (error.name === "AbortError") {
+          errorMessage = "Tempo de espera esgotado. Por favor, tente novamente.";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
+      setProError(errorMessage);
       setIsLoadingPro(false);
     }
   };
